@@ -208,6 +208,32 @@ export const RESTAURANTE = {
   pedido: 'Quero saber do restaurante no fim de semana do dia 10/10',
 }
 
+export interface Avaliacao {
+  texto: string
+  /** 1 a 5. */
+  nota: number
+  /** Nome como aparece no Google. Vazio = mostra só "Avaliação no Google". */
+  autor?: string
+}
+
+/**
+ * Avaliações reais do perfil "Cachoeira do Esmeril Camping Vale dos Sonhos" no Google Maps,
+ * copiadas sem edição. Nota e total conferidos em 27/09/2026 — atualize quando mudar.
+ */
+export const AVALIACOES = {
+  rotulo: 'Quem já foi',
+  titulo: 'O que dizem no Google',
+  nota: '4,7',
+  total: 151,
+  link: 'https://search.google.com/local/reviews?placeid=ChIJN-0GARVbt5QRxAeYyWQsTII',
+  chamada: 'Ver todas no Google',
+  lista: [
+    { nota: 5, texto: 'Lugar top de mais, natureza exuberante um ótimo passeio com a família!' },
+    { nota: 5, texto: 'Pessoal nota mil, comida deliciosa e com preço acessível.' },
+    { nota: 5, texto: 'O restaurante prato feito muito saboroso e o lanche AMAMOS.' },
+  ] satisfies Avaliacao[] as Avaliacao[],
+}
+
 export const LOCALIZACAO = {
   rotulo: 'Onde fica',
   titulo: 'Como chegar',

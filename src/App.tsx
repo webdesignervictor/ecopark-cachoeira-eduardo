@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ATIVIDADES, BARRA, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
+  ATIVIDADES, AVALIACOES, BARRA, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
   HOSPEDAGEM_SECAO,
   LINK_PAGAMENTO, LOCALIZACAO, OBJECOES, PARA_QUEM, RESTAURANTE, RODAPE, TOPO, TOPO_MIDIA,
   VISITACAO, WHATSAPP,
@@ -8,6 +8,7 @@ import {
 import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
 import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
+import { Estrelas } from './componentes/Estrelas'
 import { Secao } from './componentes/Secao'
 import { MidiaFundo } from './componentes/MidiaFundo'
 import { BarraReserva } from './componentes/BarraReserva'
@@ -68,6 +69,19 @@ export default function App() {
           <div className="mt-7 flex flex-col">
             <Botao href={destino('Rope Jump')} className="max-sm:self-center">{TOPO.chamada}</Botao>
           </div>
+
+          <a
+            href={AVALIACOES.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 flex w-fit items-center gap-2.5 text-sm hover:underline max-sm:mx-auto"
+          >
+            <Estrelas nota={5} />
+            <span>
+              <strong className="font-semibold">{AVALIACOES.nota}</strong>
+              <span className="text-bruma"> · {AVALIACOES.total} avaliações no Google</span>
+            </span>
+          </a>
 
         </div>
       </header>
@@ -250,6 +264,33 @@ export default function App() {
           className="mt-8"
         >
           {RESTAURANTE.chamada}
+        </Botao>
+      </Secao>
+
+      {/* 07b · Avaliações do Google */}
+      <Secao rotulo={AVALIACOES.rotulo} titulo={AVALIACOES.titulo}>
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p className="font-titulo text-6xl leading-none">{AVALIACOES.nota}</p>
+          <div>
+            <Estrelas nota={5} />
+            <p className="mt-1 text-sm text-bruma">{AVALIACOES.total} avaliações no Google</p>
+          </div>
+        </div>
+
+        <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+          {AVALIACOES.lista.map((a) => (
+            <li key={a.texto} className="flex flex-col rounded-2xl bg-pedra p-6">
+              <Estrelas nota={a.nota} />
+              <blockquote className="mt-4 flex-1 text-lg leading-snug">“{a.texto}”</blockquote>
+              <p className="mt-5 font-rotulo text-[10px] uppercase tracking-[.16em] text-bruma">
+                {a.autor || 'Avaliação no Google'}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <Botao href={AVALIACOES.link} variante="vazado" className="mt-8">
+          {AVALIACOES.chamada}
         </Botao>
       </Secao>
 
