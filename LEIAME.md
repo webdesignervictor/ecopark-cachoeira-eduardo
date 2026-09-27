@@ -1,0 +1,82 @@
+# Landing page — Evento 10/10 · Cachoeira do Esmeril
+
+Vite + React 19 + TypeScript estrito + Tailwind v4. Página única.
+
+## Antes de publicar — obrigatório
+
+Tudo em `src/dados/`:
+
+| Arquivo | Campo | O que falta |
+|---|---|---|
+| `evento.ts` | `WHATSAPP` | Número em formato internacional, só dígitos (ex.: `5516999999999`). Hoje está `[PREENCHER]` e o botão não funciona. |
+| `evento.ts` | `LINK_PAGAMENTO` | Opcional. Link de checkout, se um dia houver. Vazio = o botão cai no WhatsApp (a reserva não exige sinal). |
+| `pixel.ts` | `PIXEL_META` | ID do pixel, depois que a conta de anúncio do cliente existir. Vazio = nada é carregado. |
+
+## Imagens
+
+Hero, **vertical 9:16**, em loop e sem som. No celular cobre a hero inteira; no desktop vira um card à direita.
+
+- `public/videos/hero.mp4` — já comprimido: H.264, 540×960, 24 fps, sem áudio, 5,5 MB (original HEVC de 55 MB guardado em `_to_delete/originais/`).
+- `public/imagens/topo.jpg` — primeiro quadro do vídeo. Pôster enquanto carrega e imagem fixa para quem tem "reduzir movimento" ligado.
+
+Para trocar o vídeo, comprimir assim antes (HEVC não toca no Chrome/Firefox):
+
+```bash
+ffmpeg -i ORIGINAL.mp4 -an -vf "scale=540:960:flags=lanczos,fps=24" -c:v libx264 -preset slow -crf 32 \
+  -profile:v high -pix_fmt yuv420p -movflags +faststart public/videos/hero.mp4
+ffmpeg -y -i public/videos/hero.mp4 -frames:v 1 -q:v 5 public/imagens/topo.jpg
+```
+
+## Vídeos (verticais 9:16)
+
+Todos em `public/videos/`. Enquanto o arquivo não existe, o card mostra o nome esperado.
+Tocam mudos e em loop quando aparecem na tela; o botão no canto liga o som.
+Use MP4 (H.264), 1080×1920 ou 720×1280, de 5 a 15 s, idealmente abaixo de 4 MB cada.
+
+| Onde | Arquivos |
+|---|---|
+| Galeria | `galeria-01.mp4` … `galeria-08.mp4` |
+| Atividades | `rope-jump.mp4`, `rede-suspensa.mp4`, `cachoeira-escondida.mp4`, `morro-da-mesa.mp4` |
+| Hospedagem | `camping.mp4`, `camping-fds.mp4`, `chale.mp4` |
+| Restaurante | `restaurante.mp4`, `restaurante-pratos.mp4`, `restaurante-porcoes.mp4`, `restaurante-bebidas.mp4` |
+| Fecho | `fecho.mp4` |
+
+Legendas e caminhos ficam em `src/dados/evento.ts`.
+
+## Medição
+
+`src/dados/rastreio.ts` captura a UTM na chegada, guarda na sessão e embute a origem
+na mensagem do WhatsApp. Quem atende vê de onde a pessoa veio sem perguntar.
+
+Links a usar nas campanhas:
+
+```
+?utm_source=instagram&utm_campaign=evento1010&utm_content=bio
+?utm_source=instagram&utm_campaign=evento1010&utm_content=stories
+?utm_source=meta&utm_campaign=evento1010&utm_content=retargeting
+?utm_source=meta&utm_campaign=evento1010&utm_content=frio
+```
+
+## Rodar
+
+```bash
+npm run dev      # desenvolvimento
+npm run build    # produção
+```
+
+**Atenção:** o build falha ao esvaziar `dist` nesta máquina.
+Antes de cada build: `mv dist "_to_delete/dist-$(date +%Y%m%d-%H%M%S)"`
+
+## Conteúdo
+
+Todo o texto vive em `src/dados/evento.ts`. Nenhuma frase é escrita dentro de componente —
+para mudar preço, data ou copy, mexa só nesse arquivo.
+
+Estrutura da página, na ordem: promessa · para quem é · como funciona ·
+atividades e preços · hospedagem e restaurante · objeções · fecho.
+
+## O que ainda não foi confirmado com o cliente
+
+- Quantas vagas por turno (a página diz "limitadas por turno", sem número)
+- Capacidade real do Rope Jump por turno
+- Altura do salto e se há restrição de idade ou peso

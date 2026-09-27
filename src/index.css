@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tema claro: fundo branco e areia, verde-floresta para natureza, laranja para aventura. */
+  --color-noite: #ffffff;       /* fundo principal */
+  --color-mata: #f5f1e6;        /* fundo alternado, areia */
+  --color-pedra: #ecf3e8;       /* superfície de card, musgo claro */
+  --color-agua: #1f6b45;        /* verde-floresta: rótulos, preços, detalhes */
+  --color-agua-forte: #154d31;
+  --color-neve: #13281c;        /* texto */
+  --color-bruma: #56675c;       /* texto secundário */
+  --color-linha: #e2dfd2;       /* bordas */
+  --color-laranja: #e8590c;     /* aventura: botões e destaques */
+  --color-laranja-forte: #c2410c;
+  --color-ambar: #f2c27b;
+
+  --font-titulo: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-texto: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-rotulo: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Animações dos CTAs */
+  --animate-brilho: brilho 3.8s ease-in-out infinite;
+  --animate-seta: seta 1.4s ease-in-out infinite;
+  --animate-pulso: pulso 2.6s ease-out infinite;
+}
+
+/* Faixa de luz que atravessa o botão e descansa até a próxima passada. */
+@keyframes brilho {
+  0% { transform: translateX(-120%) skewX(-20deg); }
+  35%, 100% { transform: translateX(420%) skewX(-20deg); }
+}
+/* Seta empurrando para a frente. */
+@keyframes seta {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+/* Halo que sai do botão, chamando o polegar. */
+@keyframes pulso {
+  0% { box-shadow: 0 0 0 0 rgba(232, 89, 12, .45); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(232, 89, 12, 0); }
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 3.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+/* Blocos escuros sobre a página clara (vídeos, fecho, rodapé): os mesmos tokens, invertidos. */
+.tema-escuro {
+  --color-noite: #0f2118;
+  --color-mata: #163326;
+  --color-pedra: #1d3d2d;
+  --color-agua: #9ddcb2;
+  --color-agua-forte: #7cc795;
+  --color-neve: #ffffff;
+  --color-bruma: #c5d3c9;
+  --color-linha: #2b4b3a;
+  color: var(--color-neve);
+}
+body { margin: 0; background: var(--color-noite); color: var(--color-neve); font-family: var(--font-texto); overflow-x: hidden; }
+:focus-visible { outline: 2px solid var(--color-agua); outline-offset: 3px; border-radius: 2px; }
+.sem-barra { scrollbar-width: none; }
+.sem-barra::-webkit-scrollbar { display: none; }
