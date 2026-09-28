@@ -143,24 +143,14 @@ export default function App() {
 
       {/* 03 · Para quem é */}
       <Secao nome="para_quem" rotulo="Para quem é" titulo={PARA_QUEM.titulo} fundo="vidro">
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5">
-          <ul className="rounded-2xl bg-white/10 px-5 py-2 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:px-6">
-            {PARA_QUEM.sim.map((t) => (
-              <li key={t} className="flex gap-3 border-b border-white/10 py-3.5 text-[15px] leading-snug last:border-0">
-                <span aria-hidden="true" className="mt-px text-agua">+</span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="rounded-2xl bg-white/5 px-5 py-2 ring-1 ring-white/10 ring-inset backdrop-blur-xl sm:px-6">
-            {PARA_QUEM.nao.map((t) => (
-              <li key={t} className="flex gap-3 border-b border-white/10 py-3.5 text-[15px] leading-snug text-bruma last:border-0">
-                <span aria-hidden="true" className="mt-px">—</span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-8 max-w-2xl rounded-2xl bg-white/10 px-5 py-2 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:px-6">
+          {PARA_QUEM.sim.map((t) => (
+            <li key={t} className="flex gap-3 border-b border-white/10 py-3.5 text-[15px] leading-snug last:border-0">
+              <span aria-hidden="true" className="mt-px text-agua">+</span>
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
       </Secao>
 
       {/* 04 · Como funciona */}

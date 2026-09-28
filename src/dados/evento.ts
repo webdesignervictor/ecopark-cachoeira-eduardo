@@ -44,8 +44,8 @@ export interface Objecao {
 
 export const EVENTO = {
   nome: 'Cachoeira do Esmeril',
-  local: 'Altinópolis e Patrocínio Paulista · SP',
-  distancia: '34 km de Altinópolis',
+  local: 'Patrocínio Paulista · SP',
+  distancia: 'Patrocínio Paulista-SP',
   data: 'Sábado, 10 de outubro',
   /** Início do primeiro turno, horário de Brasília. É o alvo do contador. */
   inicio: '2026-10-10T09:00:00-03:00',
@@ -56,7 +56,7 @@ export const EVENTO = {
 } as const
 
 export const TOPO = {
-  rotulo: 'Sábado, 10 de outubro · Altinópolis-SP',
+  rotulo: 'Sábado, 10 de outubro · Patrocínio Paulista-SP',
   titulo: 'Salta, ou fica olhando?',
   subtitulo:
     'Rope Jump na Cachoeira do Esmeril. Dois turnos, vagas limitadas, e um dia que não tem como fazer pela metade.',
@@ -98,11 +98,6 @@ export const PARA_QUEM = {
     'Turma de amigos que quer um dia que rende história',
     'Quem quer trilha e cachoeira sem precisar saltar',
     'Casal ou família que vai passar o fim de semana e quer acampar',
-  ],
-  nao: [
-    'Quem procura um parque aquático com estrutura de resort',
-    'Quem quer ir a qualquer dia — aqui as datas são marcadas',
-    'Quem não tem como chegar até a região de Altinópolis',
   ],
 } as const
 
@@ -241,7 +236,7 @@ export const LOCALIZACAO = {
   rotulo: 'Onde fica',
   titulo: 'Como chegar',
   lugar: 'Cachoeira do Esmeril · Camping Vale dos Sonhos',
-  texto: 'A 34 km de Altinópolis-SP. Depois da reserva, a gente manda o horário de chegada e o que levar.',
+  texto: 'Em Patrocínio Paulista-SP, a 34 km de Altinópolis. Depois da reserva, a gente manda o horário de chegada e o que levar.',
   chamada: 'Traçar rota',
   chamadaWaze: 'Abrir no Waze',
   /** Abre o Waze já navegando até o local. */
@@ -320,6 +315,6 @@ export const LINK_PAGAMENTO = ''
 
 export const RODAPE = {
   negocio: 'Cachoeira do Esmeril',
-  local: 'Altinópolis e Patrocínio Paulista · SP',
+  local: 'Patrocínio Paulista · SP',
   credito: 'Página por Victtor Growth Systems',
 } as const
