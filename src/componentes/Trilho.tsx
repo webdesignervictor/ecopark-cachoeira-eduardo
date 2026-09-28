@@ -38,6 +38,8 @@ export function Trilho({ children, colunas, className = '' }: Props) {
             key={s}
             type="button"
             onClick={() => rolar(s)}
+            data-evento="galeria_seta"
+            data-detalhe={s < 0 ? 'anterior' : 'proximo'}
             aria-label={s < 0 ? 'Vídeos anteriores' : 'Próximos vídeos'}
             className="grid size-11 place-items-center rounded-full border border-linha text-neve transition-colors hover:border-laranja hover:text-laranja"
           >

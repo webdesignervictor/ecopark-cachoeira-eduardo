@@ -11,6 +11,8 @@ Tudo em `src/dados/`:
 | `evento.ts` | `WHATSAPP` | Número em formato internacional, só dígitos (ex.: `5516999999999`). Hoje está `[PREENCHER]` e o botão não funciona. |
 | `evento.ts` | `LINK_PAGAMENTO` | Opcional. Link de checkout, se um dia houver. Vazio = o botão cai no WhatsApp (a reserva não exige sinal). |
 | `pixel.ts` | `PIXEL_META` | ID do pixel, depois que a conta de anúncio do cliente existir. Vazio = nada é carregado. |
+| `medicao.ts` | `GA4_ID`, `CLARITY_ID` | Opcionais. Google Analytics 4 e Microsoft Clarity (gravação de sessões e mapa de calor). Vazio = não carrega. |
+| Vercel | `DATABASE_URL` | Conexão do Postgres onde as ações ficam gravadas. Sem ela a página funciona, mas nada é guardado. Ver "Banco de medição". |
 
 ## Imagens
 
@@ -56,6 +58,57 @@ Links a usar nas campanhas:
 ?utm_source=meta&utm_campaign=evento1010&utm_content=retargeting
 ?utm_source=meta&utm_campaign=evento1010&utm_content=frio
 ```
+
+### O que é rastreado
+
+Tudo passa por `rastrear()` em `src/dados/medicao.ts` e vai para o nosso banco e para as
+ferramentas com ID preenchido. Em `npm run dev` cada ação aparece no console como `[medição]`
+(e nada é enviado ao banco).
+
+| Ação | Quando |
+|---|---|
+| `pagina_aberta` | Abriu a página |
+| `secao_vista` | Metade de uma seção apareceu na tela (uma vez por seção) |
+| `tempo_secao` | Saiu de uma seção: segundos que ela ficou no meio da tela (pausa com a aba escondida) |
+| `rolagem` | Passou de 25, 50, 75 e 90% da página |
+| `clique_whatsapp` / `clique_hospedagem` | Clicou para reservar — com a seção de onde clicou |
+| `clique_rota_google` / `clique_rota_waze` / `clique_avaliacoes_google` | Links de rota e avaliações |
+| `pergunta_aberta` | Abriu uma pergunta frequente |
+| `video_assistido` | Segundos que cada vídeo tocou, e se estava com som |
+| `video_som_ligado` / `video_som_desligado` | Mexeu no som de um vídeo |
+| `galeria_arrastada` / `galeria_seta` | Arrastou uma galeria ou usou as setas |
+| `avaliacao_tocada` | Tocou num card de avaliação |
+| `mapa_interacao` | Mexeu no mapa |
+| `texto_copiado` | Copiou texto (preço, endereço…) |
+| `clique_frustrado` | 3+ toques no mesmo elemento em menos de 1 s (algo parece clicável e não é) |
+| `erro_js` | Erro de JavaScript no aparelho da pessoa |
+| `desempenho` | Velocidade real: TTFB, FCP, LCP e CLS |
+| `resumo_visita` | Ao sair: tempo visível, tempo total, rolagem máxima, seções vistas, cliques |
+
+Por visita também ficam: origem (UTM), aparelho (fabricante, modelo, sistema e versão,
+navegador e versão, app — Instagram, Facebook…), tela, cidade/estado (pelo Vercel; o IP não é
+guardado), internet (4g…), hora local, se é a 1ª visita daquele aparelho, entre outros.
+No iPhone o modelo é estimado pela tela (`modelo_estimado = true`), exceto dentro do
+Instagram/Facebook, onde vem exato.
+
+Seção nova precisa de `nome` no `<Secao>` — é o nome que aparece nos relatórios.
+
+### Banco de medição
+
+Postgres. Função de recebimento em `api/eventos.ts`; esquema e análises prontas em `banco/schema.sql`.
+
+1. Criar o banco — o mais simples é no próprio Vercel: projeto → **Storage** → **Neon (Postgres)**.
+   Ele já cria a variável `DATABASE_URL`. (Supabase também serve: usar a string do "pooler".)
+2. Abrir o editor SQL do provedor e rodar `banco/schema.sql` inteiro (pode rodar de novo quando mudar).
+3. Publicar de novo. Pronto — as visitas começam a entrar.
+
+Visões prontas para consultar: `resumo_secoes` (pessoas e tempo médio por seção),
+`tempo_por_secao` (por visita), `visitas` (resumo de cada visita e se chamou no WhatsApp),
+`funil_por_origem`, `videos`, `aparelhos`.
+
+**LGPD:** nenhum dado pessoal é gravado (nome, telefone, IP), mas há um identificador anônimo
+guardado no aparelho. Se a página for usar Pixel/GA4/Clarity em campanha, o recomendado é ter
+um aviso de cookies com consentimento.
 
 ## Rodar
 

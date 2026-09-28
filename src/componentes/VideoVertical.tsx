@@ -98,6 +98,8 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
         <button
           type="button"
           onClick={alternarSom}
+          data-evento={mudo ? 'video_som_ligado' : 'video_som_desligado'}
+          data-detalhe={src.split('/').pop()}
           aria-label={mudo ? 'Ativar som' : 'Desativar som'}
           className="absolute top-2 right-2 grid size-11 place-items-center rounded-full bg-noite/60 text-neve backdrop-blur transition-colors hover:bg-noite/85"
         >

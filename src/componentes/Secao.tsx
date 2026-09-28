@@ -1,5 +1,7 @@
 interface Props {
   id?: string
+  /** Nome da seção nos relatórios de medição (data-secao). */
+  nome: string
   rotulo?: string
   titulo?: string
   intro?: string
@@ -8,10 +10,11 @@ interface Props {
   fundo?: 'noite' | 'mata' | 'escuro' | 'vidro'
 }
 
-export function Secao({ id, rotulo, titulo, intro, children, fundo = 'noite' }: Props) {
+export function Secao({ id, nome, rotulo, titulo, intro, children, fundo = 'noite' }: Props) {
   return (
     <section
       id={id}
+      data-secao={nome}
       className={{
         noite: 'bg-noite',
         mata: 'bg-mata',

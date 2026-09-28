@@ -6,6 +6,7 @@ import {
   VISITACAO, WHATSAPP,
 } from './dados/evento'
 import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
+import { iniciarMedicao } from './dados/medicao'
 import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
 import { Estrelas } from './componentes/Estrelas'
@@ -18,6 +19,7 @@ import { VideoVertical } from './componentes/VideoVertical'
 
 export default function App() {
   const origem = useMemo(() => capturarOrigem(), [])
+  useEffect(() => iniciarMedicao(origem), [origem])
   const destino = (assunto: string) =>
     LINK_PAGAMENTO || linkWhatsApp(WHATSAPP, origem, assunto)
 
@@ -49,6 +51,7 @@ export default function App() {
       {/* 01 · A promessa */}
       <header
         ref={topoRef}
+        data-secao="topo"
         className="tema-escuro relative flex min-h-[88svh] flex-col justify-end overflow-hidden lg:justify-center bg-[linear-gradient(160deg,#1d3d2d,#0f2118_70%)] lg:min-h-[82vh]"
       >
         <MidiaFundo
@@ -88,7 +91,7 @@ export default function App() {
       </header>
 
       {/* Ficha do evento */}
-      <div className="border-b border-linha">
+      <div data-secao="ficha" className="border-b border-linha">
         <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8">
           <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
             {[
@@ -108,7 +111,7 @@ export default function App() {
       </div>
 
       {/* 01b · Avaliações do Google — logo depois da ficha, para a prova vir cedo */}
-      <Secao rotulo={AVALIACOES.rotulo} titulo={AVALIACOES.titulo} fundo="vidro">
+      <Secao nome="avaliacoes" rotulo={AVALIACOES.rotulo} titulo={AVALIACOES.titulo} fundo="vidro">
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
           <p className="font-titulo text-6xl leading-none">{AVALIACOES.nota}</p>
           <div>
@@ -125,7 +128,7 @@ export default function App() {
       </Secao>
 
       {/* 02 · Galeria de vídeos */}
-      <Secao rotulo={GALERIA.rotulo} titulo={GALERIA.titulo} intro={GALERIA.intro}>
+      <Secao nome="galeria" rotulo={GALERIA.rotulo} titulo={GALERIA.titulo} intro={GALERIA.intro}>
         <Trilho className="mt-9">
           {GALERIA.videos.map((v, i) => (
             <VideoVertical key={v.src} src={v.src} poster={v.poster}>
@@ -139,7 +142,7 @@ export default function App() {
       </Secao>
 
       {/* 03 · Para quem é */}
-      <Secao rotulo="Para quem é" titulo={PARA_QUEM.titulo} fundo="vidro">
+      <Secao nome="para_quem" rotulo="Para quem é" titulo={PARA_QUEM.titulo} fundo="vidro">
         <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5">
           <ul className="rounded-2xl bg-white/10 px-5 py-2 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:px-6">
             {PARA_QUEM.sim.map((t) => (
@@ -161,7 +164,7 @@ export default function App() {
       </Secao>
 
       {/* 04 · Como funciona */}
-      <Secao rotulo="Como funciona" titulo="Três passos e está feito">
+      <Secao nome="como_funciona" rotulo="Como funciona" titulo="Três passos e está feito">
         <ol className="mt-8 grid gap-6 sm:grid-cols-3">
           {COMO_FUNCIONA.map((p) => (
             <li key={p.numero} className="border-t border-agua/40 pt-5">
@@ -176,6 +179,7 @@ export default function App() {
       {/* 05 · Atividades e preços */}
       <Secao
         id="atividades"
+        nome="atividades"
         rotulo="O que dá para fazer"
         titulo="Escolha o seu dia"
         intro="Cada atividade é cobrada à parte. Você monta o sábado do tamanho que quiser."
@@ -220,7 +224,7 @@ export default function App() {
       </Secao>
 
       {/* 06 · Hospedagem */}
-      <Secao rotulo={HOSPEDAGEM_SECAO.rotulo} titulo={HOSPEDAGEM_SECAO.titulo} intro={HOSPEDAGEM_SECAO.intro}>
+      <Secao nome="hospedagem" rotulo={HOSPEDAGEM_SECAO.rotulo} titulo={HOSPEDAGEM_SECAO.titulo} intro={HOSPEDAGEM_SECAO.intro}>
         <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-pedra px-3.5 py-1.5 text-sm font-medium text-agua">
           <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-[2.5]" aria-hidden="true">
             <path d="m5 12 5 5L20 7" />
@@ -257,7 +261,7 @@ export default function App() {
       </Secao>
 
       {/* 07 · Restaurante */}
-      <Secao rotulo={RESTAURANTE.rotulo} titulo={RESTAURANTE.titulo} intro={RESTAURANTE.texto} fundo="vidro">
+      <Secao nome="restaurante" rotulo={RESTAURANTE.rotulo} titulo={RESTAURANTE.titulo} intro={RESTAURANTE.texto} fundo="vidro">
         <ul className="mt-6 flex flex-wrap gap-2">
           {RESTAURANTE.destaques.map((d) => (
             <li
@@ -292,7 +296,7 @@ export default function App() {
       </Secao>
 
       {/* 08 · Localização */}
-      <Secao rotulo={LOCALIZACAO.rotulo} titulo={LOCALIZACAO.titulo} fundo="mata">
+      <Secao nome="localizacao" rotulo={LOCALIZACAO.rotulo} titulo={LOCALIZACAO.titulo} fundo="mata">
         <p className="mt-4 font-semibold">{LOCALIZACAO.lugar}</p>
         <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-bruma">{LOCALIZACAO.texto}</p>
 
@@ -327,7 +331,7 @@ export default function App() {
       </Secao>
 
       {/* 09 · Objeções */}
-      <Secao rotulo="Antes de decidir" titulo="O que costumam perguntar" fundo="vidro">
+      <Secao nome="perguntas" rotulo="Antes de decidir" titulo="O que costumam perguntar" fundo="vidro">
         <div className="mt-6 space-y-3">
           {OBJECOES.map((o) => (
             <details
@@ -350,7 +354,7 @@ export default function App() {
       </Secao>
 
       {/* 10 · Fecho */}
-      <Secao rotulo="Última chamada" fundo="mata">
+      <Secao nome="fecho" rotulo="Última chamada" fundo="mata">
         <div ref={fechoRef} className="grid items-center gap-8 overflow-hidden tema-escuro rounded-3xl bg-noite p-6 sm:grid-cols-[1fr_220px] sm:p-12 lg:grid-cols-[1fr_260px]">
           <div>
             <h2 className="max-w-xl font-titulo text-4xl leading-[1.05] text-balance sm:text-5xl">
@@ -368,7 +372,7 @@ export default function App() {
         </div>
       </Secao>
 
-      <footer className="tema-escuro bg-noite">
+      <footer data-secao="rodape" className="tema-escuro bg-noite">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-5 pt-10 pb-32 text-sm text-bruma lg:pb-10 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div>
             <p className="font-semibold text-neve">{RODAPE.negocio}</p>

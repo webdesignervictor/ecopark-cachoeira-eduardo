@@ -43,8 +43,11 @@ export function CarrosselAvaliacoes({ avaliacoes, className = '' }: Props) {
                   aria-hidden={copia === 1 || undefined}
                   className="w-[80vw] max-w-[320px] shrink-0 pr-3 sm:pr-4"
                 >
-                  <figure className="flex h-full flex-col rounded-2xl bg-white/10 p-5 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl">
-
+                  <figure
+                    data-evento="avaliacao_tocada"
+                    data-detalhe={a.autor || a.texto.slice(0, 40)}
+                    className="flex h-full flex-col rounded-2xl bg-white/10 p-5 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl"
+                  >
                     <Estrelas nota={a.nota} />
                     <blockquote className="mt-3 line-clamp-6 flex-1 text-[15px] leading-snug">
                       “{a.texto}”

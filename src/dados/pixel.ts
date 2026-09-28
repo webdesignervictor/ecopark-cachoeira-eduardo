@@ -1,6 +1,7 @@
 /**
  * Pixel do Meta. Deixe o ID vazio até a conta de anúncio do cliente existir —
  * com ID vazio nada é carregado e nenhum dado sai da página.
+ * Os eventos saem por `rastrear()`, em medicao.ts.
  */
 export const PIXEL_META = ''
 
@@ -31,11 +32,4 @@ export function iniciarPixel(): void {
   const fbq = (window as unknown as { fbq: (...a: unknown[]) => void }).fbq
   fbq('init', PIXEL_META)
   fbq('track', 'PageView')
-}
-
-/** Dispara quando alguém clica para reservar. É o evento que otimiza a campanha. */
-export function eventoContato(assunto: string): void {
-  if (!PIXEL_META || typeof window === 'undefined') return
-  const w = window as unknown as { fbq?: (...a: unknown[]) => void }
-  w.fbq?.('track', 'Contact', { content_name: assunto })
 }

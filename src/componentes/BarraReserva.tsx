@@ -15,6 +15,7 @@ interface Props {
 export function BarraReserva({ visivel, href, titulo, apoio, chamada }: Props) {
   return (
     <div
+      data-local="barra_fixa"
       aria-hidden={!visivel}
       className={`tema-escuro fixed inset-x-0 bottom-0 z-50 bg-noite/95 px-4 pt-3 pb-[max(.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,.18)] backdrop-blur transition-transform duration-300 lg:hidden ${
         visivel ? 'translate-y-0' : 'pointer-events-none translate-y-full'
