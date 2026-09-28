@@ -218,7 +218,8 @@ export interface Avaliacao {
 
 /**
  * Avaliações reais do perfil "Cachoeira do Esmeril Camping Vale dos Sonhos" no Google Maps,
- * copiadas sem edição. Nota e total conferidos em 27/09/2026 — atualize quando mudar.
+ * copiadas sem edição (só as quebras de linha viraram espaço). Nota e total conferidos em 27/09/2026.
+ * Todas entram no carrossel infinito; acima de 10, ele vira duas faixas.
  */
 export const AVALIACOES = {
   rotulo: 'Quem já foi',
@@ -228,9 +229,11 @@ export const AVALIACOES = {
   link: 'https://search.google.com/local/reviews?placeid=ChIJN-0GARVbt5QRxAeYyWQsTII',
   chamada: 'Ver todas no Google',
   lista: [
-    { nota: 5, texto: 'Lugar top de mais, natureza exuberante um ótimo passeio com a família!' },
-    { nota: 5, texto: 'Pessoal nota mil, comida deliciosa e com preço acessível.' },
-    { nota: 5, texto: 'O restaurante prato feito muito saboroso e o lanche AMAMOS.' },
+    { autor: 'Hugo Guerreiro', nota: 5, texto: "Lugar maravilhoso por si só. Além disso a família que toma conta é muito hospitaleira, atenciosa e receptiva. Tem chuveiro com água quente, iluminação na área de camping, wifi gratuito, energia elétrica para carregar o celular, cozinha comunitária com fogão, geladeira e utensílios. A cozinheira de lá é sensacional, a comida é muito saborosa e vem boa quantidade. Muito obrigado pelo atendimento e pelas fogueiras!!!" },
+    { autor: 'vinicius Rocha', nota: 5, texto: "A Cachoeira do Esmeril e o Camping Vale dos Sonhos se destacam pela beleza natural e, principalmente, pelo atendimento excelente e a ótima hospitalidade. Desde a chegada, somos recebidos com atenção, simpatia e cuidado, o que torna a experiência ainda mais agradável. O camping conta com uma boa estrutura, incluindo cozinha comunitária bem organizada, pontos de energia para maior comodidade, além de restaurante e bar no local, facilitando bastante a estadia. Tudo é simples, funcional e acolhedor, pensado para o conforto dos visitantes. Um lugar tranquilo, bem cuidado e administrado com carinho. Recomendo para quem busca contato com a natureza aliado a bom atendimento e hospitalidade." },
+    { autor: 'Ateliê Beauty Shop', nota: 5, texto: "Um lindo e ótimo lugar que quero ir com frequência concerteza" },
+    { autor: 'Aline Spolzino', nota: 5, texto: "É simplesmente um Shangrilá. Qdo pegamos a estrada de terra achei pouco provável ter um lugar tão lindo como eu vi nas fotos, mas na verdade é ao contrário, as fotos não falam o quão lindo é lugar . A trilha está bem sinalizada , limpa e conservada . A infraestrutura do Camping Vale dos Sonhos é muito boa , a nossa comida estava muito saborosa, preço acessível, opções variadas do café da manhã , almoço e lanches . Vamos voltar para acampar ." },
+    { autor: 'Thais Pereira', nota: 5, texto: "Espaço organizado, com várias opções de comidas e bebidas, possui wifi e o acesso as cachoeiras são fáceis." },
   ] satisfies Avaliacao[] as Avaliacao[],
 }
 
@@ -240,6 +243,9 @@ export const LOCALIZACAO = {
   lugar: 'Cachoeira do Esmeril · Camping Vale dos Sonhos',
   texto: 'A 34 km de Altinópolis-SP. Depois da reserva, a gente manda o horário de chegada e o que levar.',
   chamada: 'Traçar rota',
+  chamadaWaze: 'Abrir no Waze',
+  /** Abre o Waze já navegando até o local. */
+  waze: 'https://waze.com/ul?ll=-20.8346588,-47.3140229&navigate=yes',
   embed:
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3728.9268835153134!2d-47.3140229!3d-20.834658800000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94b75b150106ed37%3A0x824c2c64c99807c4!2sCachoeira%20do%20Esmeril%20Camping%20Vale%20dos%20Sonhos!5e0!3m2!1spt-BR!2sbr!4v1790474325769!5m2!1spt-BR!2sbr',
   /** Abre o app do Google Maps no celular já com o destino. */

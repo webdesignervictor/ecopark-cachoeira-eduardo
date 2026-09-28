@@ -22,6 +22,8 @@
   --animate-brilho: brilho 3.8s ease-in-out infinite;
   --animate-seta: seta 1.4s ease-in-out infinite;
   --animate-pulso: pulso 2.6s ease-out infinite;
+  /* Carrossel de avaliações; a duração real vem do componente, pelo número de cards. */
+  --animate-rolar: rolar 60s linear infinite;
 }
 
 /* Faixa de luz que atravessa o botão e descansa até a próxima passada. */
@@ -38,6 +40,11 @@
 @keyframes pulso {
   0% { box-shadow: 0 0 0 0 rgba(232, 89, 12, .45); }
   70%, 100% { box-shadow: 0 0 0 16px rgba(232, 89, 12, 0); }
+}
+
+/* A lista vem duplicada: andar metade encaixa o fim no começo. */
+@keyframes rolar {
+  to { transform: translateX(-50%); }
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: 3.5rem; }

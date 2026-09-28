@@ -9,6 +9,7 @@ import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
 import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
 import { Estrelas } from './componentes/Estrelas'
+import { CarrosselAvaliacoes } from './componentes/CarrosselAvaliacoes'
 import { Secao } from './componentes/Secao'
 import { MidiaFundo } from './componentes/MidiaFundo'
 import { BarraReserva } from './componentes/BarraReserva'
@@ -106,6 +107,23 @@ export default function App() {
         </div>
       </div>
 
+      {/* 01b · Avaliações do Google — logo depois da ficha, para a prova vir cedo */}
+      <Secao rotulo={AVALIACOES.rotulo} titulo={AVALIACOES.titulo} fundo="vidro">
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p className="font-titulo text-6xl leading-none">{AVALIACOES.nota}</p>
+          <div>
+            <Estrelas nota={5} />
+            <p className="mt-1 text-sm text-bruma">{AVALIACOES.total} avaliações no Google</p>
+          </div>
+        </div>
+
+        <CarrosselAvaliacoes avaliacoes={AVALIACOES.lista} className="mt-8" />
+
+        <Botao href={AVALIACOES.link} variante="vazado" className="mt-8">
+          {AVALIACOES.chamada}
+        </Botao>
+      </Secao>
+
       {/* 02 · Galeria de vídeos */}
       <Secao rotulo={GALERIA.rotulo} titulo={GALERIA.titulo} intro={GALERIA.intro}>
         <Trilho className="mt-9">
@@ -121,19 +139,19 @@ export default function App() {
       </Secao>
 
       {/* 03 · Para quem é */}
-      <Secao rotulo="Para quem é" titulo={PARA_QUEM.titulo} fundo="mata">
-        <div className="mt-8 grid gap-8 sm:grid-cols-2">
-          <ul className="space-y-0">
+      <Secao rotulo="Para quem é" titulo={PARA_QUEM.titulo} fundo="vidro">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <ul className="rounded-2xl bg-white/10 px-5 py-2 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:px-6">
             {PARA_QUEM.sim.map((t) => (
-              <li key={t} className="flex gap-3 border-b border-linha py-3 text-[15px] leading-snug">
+              <li key={t} className="flex gap-3 border-b border-white/10 py-3.5 text-[15px] leading-snug last:border-0">
                 <span aria-hidden="true" className="mt-px text-agua">+</span>
                 <span>{t}</span>
               </li>
             ))}
           </ul>
-          <ul className="space-y-0">
+          <ul className="rounded-2xl bg-white/5 px-5 py-2 ring-1 ring-white/10 ring-inset backdrop-blur-xl sm:px-6">
             {PARA_QUEM.nao.map((t) => (
-              <li key={t} className="flex gap-3 border-b border-linha py-3 text-[15px] leading-snug text-bruma">
+              <li key={t} className="flex gap-3 border-b border-white/10 py-3.5 text-[15px] leading-snug text-bruma last:border-0">
                 <span aria-hidden="true" className="mt-px">—</span>
                 <span>{t}</span>
               </li>
@@ -161,7 +179,7 @@ export default function App() {
         rotulo="O que dá para fazer"
         titulo="Escolha o seu dia"
         intro="Cada atividade é cobrada à parte. Você monta o sábado do tamanho que quiser."
-        fundo="mata"
+        fundo="vidro"
       >
         <Trilho colunas={4} className="mt-9">
           {ATIVIDADES.map((a) => (
@@ -187,7 +205,7 @@ export default function App() {
           ))}
         </Trilho>
 
-        <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-linha p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+        <div className="mt-8 flex flex-col gap-6 rounded-2xl bg-white/10 p-6 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-7">
           <div className="max-w-2xl">
             <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
               <h3 className="text-lg font-semibold">{VISITACAO.nome}</h3>
@@ -238,14 +256,15 @@ export default function App() {
         </Trilho>
       </Secao>
 
-      {/* 07 · Restaurante — a única seção escura no meio da página, para se destacar */}
-      <Secao rotulo={RESTAURANTE.rotulo} titulo={RESTAURANTE.titulo} intro={RESTAURANTE.texto} fundo="escuro">
+      {/* 07 · Restaurante */}
+      <Secao rotulo={RESTAURANTE.rotulo} titulo={RESTAURANTE.titulo} intro={RESTAURANTE.texto} fundo="vidro">
         <ul className="mt-6 flex flex-wrap gap-2">
           {RESTAURANTE.destaques.map((d) => (
             <li
               key={d}
-              className="rounded-full bg-white/10 px-3.5 py-1.5 text-sm ring-1 ring-white/15 ring-inset backdrop-blur"
+              className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm shadow-md shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl"
             >
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-agua" />
               {d}
             </li>
           ))}
@@ -253,7 +272,12 @@ export default function App() {
 
         <Trilho colunas={4} className="mt-8">
           {RESTAURANTE.videos.map((v) => (
-            <VideoVertical key={v.src} src={v.src} poster={v.poster}>
+            <VideoVertical
+              key={v.src}
+              src={v.src}
+              poster={v.poster}
+              className="shadow-xl shadow-black/30 ring-1 ring-white/20"
+            >
               <p className="text-base leading-snug font-semibold">{v.legenda}</p>
             </VideoVertical>
           ))}
@@ -267,68 +291,54 @@ export default function App() {
         </Botao>
       </Secao>
 
-      {/* 07b · Avaliações do Google */}
-      <Secao rotulo={AVALIACOES.rotulo} titulo={AVALIACOES.titulo}>
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <p className="font-titulo text-6xl leading-none">{AVALIACOES.nota}</p>
-          <div>
-            <Estrelas nota={5} />
-            <p className="mt-1 text-sm text-bruma">{AVALIACOES.total} avaliações no Google</p>
-          </div>
-        </div>
-
-        <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-          {AVALIACOES.lista.map((a) => (
-            <li key={a.texto} className="flex flex-col rounded-2xl bg-pedra p-6">
-              <Estrelas nota={a.nota} />
-              <blockquote className="mt-4 flex-1 text-lg leading-snug">“{a.texto}”</blockquote>
-              <p className="mt-5 font-rotulo text-[10px] uppercase tracking-[.16em] text-bruma">
-                {a.autor || 'Avaliação no Google'}
-              </p>
-            </li>
-          ))}
-        </ul>
-
-        <Botao href={AVALIACOES.link} variante="vazado" className="mt-8">
-          {AVALIACOES.chamada}
-        </Botao>
-      </Secao>
-
       {/* 08 · Localização */}
       <Secao rotulo={LOCALIZACAO.rotulo} titulo={LOCALIZACAO.titulo} fundo="mata">
         <p className="mt-4 font-semibold">{LOCALIZACAO.lugar}</p>
         <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-bruma">{LOCALIZACAO.texto}</p>
 
-        <div className="mt-6 overflow-hidden rounded-2xl bg-pedra ring-1 ring-linha">
+        <div className="mt-6 overflow-hidden rounded-3xl bg-pedra shadow-xl shadow-black/10 ring-1 ring-linha">
           <iframe
             src={LOCALIZACAO.embed}
             title={`Mapa: ${LOCALIZACAO.lugar}`}
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
-            className="block aspect-[4/3] w-full border-0 sm:aspect-[2/1] lg:aspect-[3/1]"
+            className="block aspect-square w-full border-0 sm:aspect-[16/9] lg:aspect-[21/9]"
           />
         </div>
 
-        <Botao href={LOCALIZACAO.rota} variante="vazado" className="mt-6">
-          <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2" aria-hidden="true">
-            <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
-            <circle cx="12" cy="9.5" r="2.5" />
-          </svg>
-          {LOCALIZACAO.chamada}
-        </Botao>
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Botao href={LOCALIZACAO.rota}>
+            <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2" aria-hidden="true">
+              <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+              <circle cx="12" cy="9.5" r="2.5" />
+            </svg>
+            {LOCALIZACAO.chamada}
+          </Botao>
+          <a
+            href={LOCALIZACAO.waze}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-agua underline decoration-agua/30 underline-offset-4 hover:decoration-agua"
+          >
+            {LOCALIZACAO.chamadaWaze}
+          </a>
+        </div>
       </Secao>
 
       {/* 09 · Objeções */}
-      <Secao rotulo="Antes de decidir" titulo="O que costumam perguntar">
-        <div className="mt-6 divide-y divide-linha border-y border-linha">
+      <Secao rotulo="Antes de decidir" titulo="O que costumam perguntar" fundo="vidro">
+        <div className="mt-6 space-y-3">
           {OBJECOES.map((o) => (
-            <details key={o.pergunta} className="group">
+            <details
+              key={o.pergunta}
+              className="group rounded-2xl bg-white/10 px-5 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl transition-colors open:bg-white/15 sm:px-6"
+            >
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold sm:text-lg [&::-webkit-details-marker]:hidden">
                 {o.pergunta}
                 <span
                   aria-hidden="true"
-                  className="grid size-8 shrink-0 place-items-center rounded-full border border-linha text-agua transition-transform group-open:rotate-45"
+                  className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10 text-agua ring-1 ring-white/20 transition-transform group-open:rotate-45"
                 >
                   +
                 </span>
