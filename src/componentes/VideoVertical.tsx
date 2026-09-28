@@ -19,10 +19,25 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
   const ref = useRef<HTMLVideoElement>(null)
   const [falhou, setFalhou] = useState(false)
   const [mudo, setMudo] = useState(true)
+  // O arquivo só é pedido quando o card chega perto da tela — 18 vídeos não baixam todos na abertura.
+  const [perto, setPerto] = useState(false)
 
   useEffect(() => {
     const v = ref.current
-    if (!v || falhou) return
+    if (!v || perto) return
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setPerto(true)
+      },
+      { rootMargin: '400px' },
+    )
+    obs.observe(v)
+    return () => obs.disconnect()
+  }, [perto])
+
+  useEffect(() => {
+    const v = ref.current
+    if (!v || falhou || !perto) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const obs = new IntersectionObserver(
@@ -34,7 +49,7 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
     )
     obs.observe(v)
     return () => obs.disconnect()
-  }, [falhou])
+  }, [falhou, perto])
 
   const alternarSom = () => {
     const v = ref.current
@@ -62,12 +77,12 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
       ) : (
         <video
           ref={ref}
-          src={src}
+          src={perto ? src : undefined}
           poster={poster}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload={perto ? 'metadata' : 'none'}
           onError={() => setFalhou(true)}
           className="absolute inset-0 h-full w-full object-cover"
         />

@@ -18,26 +18,35 @@ export function MidiaFundo({ video, foto, className = '' }: Props) {
     () => !video || window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
   const [semFoto, setSemFoto] = useState(!foto)
+  // O vídeo só começa a baixar depois que a página terminou de carregar; até lá, a foto (pôster) segura a hero.
+  const [liberado, setLiberado] = useState(() => document.readyState === 'complete')
+
+  useEffect(() => {
+    if (liberado) return
+    const liberar = () => setLiberado(true)
+    window.addEventListener('load', liberar, { once: true })
+    return () => window.removeEventListener('load', liberar)
+  }, [liberado])
 
   useEffect(() => {
     const v = ref.current
-    if (!v) return
+    if (!v || !liberado) return
     // O Safari do iPhone só toca sozinho se o "mudo" estiver na propriedade, não só no atributo.
     v.muted = true
     v.play().catch(() => {})
-  }, [])
+  }, [liberado])
 
   if (!semVideo) {
     return (
       <video
         ref={ref}
-        src={video}
+        src={liberado ? video : undefined}
         poster={semFoto ? undefined : foto}
         muted
         loop
         autoPlay
         playsInline
-        preload="auto"
+        preload={liberado ? 'auto' : 'none'}
         aria-hidden="true"
         onError={() => setSemVideo(true)}
         className={className}
