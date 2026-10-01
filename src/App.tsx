@@ -180,6 +180,7 @@ export default function App() {
             <VideoVertical
               key={a.slug}
               src={a.video}
+              poster={a.imagem}
               className={a.destaque ? 'ring-4 ring-laranja' : ''}
             >
               {a.destaque && (
@@ -224,7 +225,7 @@ export default function App() {
 
         <Trilho colunas={3} className="mt-8">
           {HOSPEDAGEM.map((h) => (
-            <VideoVertical key={h.nome} src={h.video} className={h.destaque ? 'ring-4 ring-laranja' : ''}>
+            <VideoVertical key={h.nome} src={h.video} poster={h.imagem} className={h.destaque ? 'ring-4 ring-laranja' : ''}>
               {h.selo && (
                 <span
                   className={`mb-2 inline-block rounded-full px-2.5 py-1 font-rotulo text-[9px] font-medium uppercase tracking-[.16em] ${

@@ -13,6 +13,8 @@ export interface Atividade {
   observacao?: string
   /** Vídeo vertical 9:16 do card, em public/videos/. */
   video: string
+  /** Imagem 9:16 mostrada enquanto o vídeo não existe (e como capa enquanto ele carrega). */
+  imagem?: string
 }
 
 export interface Hospedagem {
@@ -20,6 +22,8 @@ export interface Hospedagem {
   preco: string
   detalhe: string
   video: string
+  /** Imagem 9:16 mostrada enquanto o vídeo não existe. */
+  imagem?: string
   selo?: string
   destaque?: boolean
 }
@@ -74,17 +78,17 @@ export const TOPO_MIDIA = {
 } as const
 
 export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: Video[] } = {
-  rotulo: 'Assista antes de decidir',
+  rotulo: 'Antes de decidir',
   titulo: 'É isso que te espera no sábado',
-  intro: 'Vídeos gravados no local. Arraste para o lado.',
+  intro: 'Ilustrações de como é o dia. Arraste para o lado.',
   videos: [
-    { src: '/videos/galeria-01.mp4', legenda: 'A subida até a plataforma' },
-    { src: '/videos/galeria-02.mp4', legenda: 'Conferência do equipamento' },
-    { src: '/videos/galeria-03.mp4', legenda: 'Os segundos antes' },
-    { src: '/videos/galeria-04.mp4', legenda: 'O salto' },
-    { src: '/videos/galeria-05.mp4', legenda: 'O balanço depois' },
-    { src: '/videos/galeria-06.mp4', legenda: 'Rede suspensa' },
-    { src: '/videos/galeria-07.mp4', legenda: 'Cachoeira da Escondida' },
+    { src: '/videos/galeria-01.mp4', poster: '/imagens/ia/galeria-01.jpg', legenda: 'A subida até a plataforma' },
+    { src: '/videos/galeria-02.mp4', poster: '/imagens/ia/galeria-02.jpg', legenda: 'Conferência do equipamento' },
+    { src: '/videos/galeria-03.mp4', poster: '/imagens/ia/galeria-03.jpg', legenda: 'Os segundos antes' },
+    { src: '/videos/galeria-04.mp4', poster: '/imagens/ia/galeria-04.jpg', legenda: 'O salto' },
+    { src: '/videos/galeria-05.mp4', poster: '/imagens/ia/galeria-05.jpg', legenda: 'O balanço depois' },
+    { src: '/videos/galeria-06.mp4', poster: '/imagens/ia/galeria-06.jpg', legenda: 'Rede suspensa' },
+    { src: '/videos/galeria-07.mp4', poster: '/imagens/ia/galeria-07.jpg', legenda: 'Cachoeira da Escondida' },
     { src: '/videos/galeria-08.mp4', legenda: 'Fim de tarde no camping' },
   ],
 }
@@ -105,6 +109,7 @@ export const ATIVIDADES: Atividade[] = [
   {
     slug: 'rope-jump',
     video: '/videos/rope-jump.mp4',
+    imagem: '/imagens/ia/galeria-04.jpg',
     nome: 'Rope Jump',
     preco: 'R$ 200',
     precoNumero: 200,
@@ -115,6 +120,7 @@ export const ATIVIDADES: Atividade[] = [
   {
     slug: 'rede-suspensa',
     video: '/videos/rede-suspensa.mp4',
+    imagem: '/imagens/ia/galeria-06.jpg',
     nome: 'Rede Suspensa',
     preco: 'R$ 70',
     precoNumero: 70,
@@ -123,6 +129,7 @@ export const ATIVIDADES: Atividade[] = [
   {
     slug: 'cachoeira-escondida',
     video: '/videos/cachoeira-escondida.mp4',
+    imagem: '/imagens/ia/galeria-07.jpg',
     nome: 'Cachoeira da Escondida',
     preco: 'R$ 50',
     precoNumero: 50,
