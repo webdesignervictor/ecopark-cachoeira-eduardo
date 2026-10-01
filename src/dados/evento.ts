@@ -80,20 +80,26 @@ export const TOPO_MIDIA = {
 export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: Video[] } = {
   rotulo: 'Antes de decidir',
   titulo: 'É isso que te espera no sábado',
-  intro: 'Ilustrações de como é o dia. Arraste para o lado.',
+  intro: 'Como é o dia, do começo ao fim. Arraste para o lado.',
   videos: [
     { src: '/videos/galeria-01.mp4', poster: '/imagens/ia/galeria-01.jpg', legenda: 'A subida até a plataforma' },
     { src: '/videos/galeria-02.mp4', poster: '/imagens/ia/galeria-02.jpg', legenda: 'Conferência do equipamento' },
     { src: '/videos/galeria-03.mp4', poster: '/imagens/ia/galeria-03.jpg', legenda: 'Os segundos antes' },
-    { src: '/videos/galeria-04.mp4', poster: '/imagens/ia/galeria-04.jpg', legenda: 'O salto' },
+    { src: '/videos/galeria-04.mp4', poster: '/imagens/fotos/galeria-salto.jpg', legenda: 'O salto' },
     { src: '/videos/galeria-05.mp4', poster: '/imagens/ia/galeria-05.jpg', legenda: 'O balanço depois' },
     { src: '/videos/galeria-06.mp4', poster: '/imagens/ia/galeria-06.jpg', legenda: 'Rede suspensa' },
     { src: '/videos/galeria-07.mp4', poster: '/imagens/ia/galeria-07.jpg', legenda: 'Cachoeira da Escondida' },
-    { src: '/videos/galeria-08.mp4', legenda: 'Fim de tarde no camping' },
+    { src: '/videos/galeria-08.mp4', poster: '/imagens/ia/galeria-08.jpg', legenda: 'Fim de tarde no camping' },
   ],
 }
 
+/** Nota sob as galerias que ainda usam ilustração (galeria, atividades, hospedagem). */
+export const AVISO_ILUSTRACAO =
+  'Algumas imagens são ilustrativas. Estamos melhorando o site e captando fotos e vídeos profissionais do local — em breve aqui.'
+
 export const FECHO_VIDEO = '/videos/fecho.mp4'
+/** Foto real mostrada no card do fecho enquanto o vídeo não existe. */
+export const FECHO_IMAGEM = '/imagens/fotos/cachoeira-esmeril.jpg'
 
 export const PARA_QUEM = {
   titulo: 'Para quem é este sábado',
@@ -109,7 +115,8 @@ export const ATIVIDADES: Atividade[] = [
   {
     slug: 'rope-jump',
     video: '/videos/rope-jump.mp4',
-    imagem: '/imagens/ia/galeria-04.jpg',
+    // Foto real do salto (as de imagens/ia/ são ilustrações).
+    imagem: '/imagens/fotos/rope-jump-salto.jpg',
     nome: 'Rope Jump',
     preco: 'R$ 200',
     precoNumero: 200,
@@ -138,6 +145,7 @@ export const ATIVIDADES: Atividade[] = [
   {
     slug: 'morro-da-mesa',
     video: '/videos/morro-da-mesa.mp4',
+    imagem: '/imagens/ia/morro-da-mesa.jpg',
     nome: 'Morro da Mesa · 4x4',
     preco: 'R$ 500',
     precoNumero: 500,
@@ -174,6 +182,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     preco: 'R$ 70',
     detalhe: 'Por pessoa, de sexta a domingo',
     video: '/videos/camping-fds.mp4',
+    imagem: '/imagens/ia/camping-fds.jpg',
     selo: 'Sexta a domingo',
   },
   {

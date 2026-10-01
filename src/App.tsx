@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ATIVIDADES, AVALIACOES, BARRA, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
+  ATIVIDADES, AVALIACOES, BARRA, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_IMAGEM, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
   HOSPEDAGEM_SECAO,
   LINK_PAGAMENTO, LOCALIZACAO, OBJECOES, PARA_QUEM, RESTAURANTE, RODAPE, TOPO, TOPO_MIDIA,
   VISITACAO, WHATSAPP,
 } from './dados/evento'
 import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
 import { iniciarMedicao } from './dados/medicao'
+import { AvisoIlustracao } from './componentes/AvisoIlustracao'
 import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
 import { Estrelas } from './componentes/Estrelas'
@@ -139,6 +140,7 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
+        <AvisoIlustracao />
       </Secao>
 
       {/* 03 · Para quem é */}
@@ -199,6 +201,7 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
+        <AvisoIlustracao />
 
         <div className="mt-8 flex flex-col gap-6 rounded-2xl bg-white/10 p-6 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-7">
           <div className="max-w-2xl">
@@ -249,6 +252,7 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
+        <AvisoIlustracao />
       </Secao>
 
       {/* 07 · Restaurante */}
@@ -359,7 +363,7 @@ export default function App() {
               </span>
             </div>
           </div>
-          <VideoVertical src={FECHO_VIDEO} className="mx-auto w-full max-w-[220px] rotate-2" />
+          <VideoVertical src={FECHO_VIDEO} poster={FECHO_IMAGEM} className="mx-auto w-full max-w-[220px] rotate-2" />
         </div>
       </Secao>
 
