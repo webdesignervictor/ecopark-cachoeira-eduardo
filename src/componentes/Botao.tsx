@@ -9,6 +9,8 @@ interface Props {
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
   /** Nome da ação na medição (data-evento), quando o clique não é o próprio link. */
   evento?: string
+  /** Halo pulsando em volta do botão cheio. Desligar onde ele seria cortado (ex.: rodapé de painel). */
+  pulso?: boolean
 }
 
 /**
@@ -18,13 +20,13 @@ interface Props {
  * Tudo some com "reduzir movimento" (motion-safe).
  */
 export function Botao({
-  href, children, variante = 'cheio', tamanho = 'normal', className = '', tabIndex, onClick, evento,
+  href, children, variante = 'cheio', tamanho = 'normal', className = '', tabIndex, onClick, evento, pulso = true,
 }: Props) {
   const cheio = variante === 'cheio'
   const compacto = tamanho === 'compacto'
 
   const casca = cheio
-    ? 'bg-laranja text-white shadow-lg shadow-laranja/30 motion-safe:animate-pulso'
+    ? `bg-laranja text-white shadow-lg shadow-laranja/30 ${pulso ? 'motion-safe:animate-pulso' : ''}`
     : 'bg-transparent text-neve ring-2 ring-inset ring-neve/15'
   const circulo = cheio ? 'bg-white' : 'bg-agua'
   // Vazado: seta e texto no hover usam a cor do fundo do tema, então funcionam no claro e no escuro.

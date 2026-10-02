@@ -185,7 +185,7 @@ export default function App() {
         nome="atividades"
         rotulo="O que dá para fazer"
         titulo="Escolha o seu dia"
-        intro="Cada atividade é cobrada à parte. Você monta o sábado do tamanho que quiser."
+        intro="Cada atividade é cobrada à parte, além da taxa de visitação. Você monta o sábado do tamanho que quiser."
         fundo="vidro"
       >
         <Trilho colunas={4} className="mt-9">

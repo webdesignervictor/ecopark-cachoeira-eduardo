@@ -78,13 +78,11 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
 
   const alternar = (item: Item) => {
     const prox = new Set(sel)
+    if (item.grupo === 'entrada') return // obrigatória, não desmarca
     if (prox.has(item.id)) prox.delete(item.id)
     else {
-      // Hospedagem é uma só; e com hospedagem a visitação já está inclusa.
-      if (item.grupo === 'hospedagem') {
-        ITENS.filter((i) => i.grupo === 'hospedagem').forEach((i) => prox.delete(i.id))
-        prox.delete('visitacao')
-      }
+      // Hospedagem é uma só.
+      if (item.grupo === 'hospedagem') ITENS.filter((i) => i.grupo === 'hospedagem').forEach((i) => prox.delete(i.id))
       prox.add(item.id)
     }
     setSel(prox)
@@ -99,9 +97,10 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
     rastrear('pack_todas', { marcado: todasAtividades ? 0 : 1 })
   }
 
+  // A visitação é obrigatória: entra sempre, a não ser com hospedagem (que já a inclui).
   const escolhidos = useMemo(
     () =>
-      ITENS.filter((i) => sel.has(i.id) && !(i.id === 'visitacao' && temHospedagem)).map((i) => {
+      ITENS.filter((i) => (i.grupo === 'entrada' ? !temHospedagem : sel.has(i.id))).map((i) => {
         const n = unidades(i.cobranca, pessoas)
         return { ...i, n, subtotal: i.preco * n }
       }),
@@ -112,6 +111,7 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
   const mensagem = [
     PACK.pedido,
     ...escolhidos.map((i) => `• ${i.nome} — ${rotuloUnidades(i.cobranca, i.n)} — ${real(i.subtotal)}`),
+    ...(temHospedagem ? [`• ${VISITACAO.nome} — ${PACK.inclusaNaHospedagem.toLowerCase()}`] : []),
     '',
     `Pessoas: ${pessoas}`,
     `Turno: ${turno || PACK.semTurno}`,
@@ -119,8 +119,9 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
   ].join('\n')
 
   const linha = (item: Item) => {
-    const marcado = sel.has(item.id)
-    const bloqueado = item.id === 'visitacao' && temHospedagem
+    const entrada = item.grupo === 'entrada'
+    const marcado = entrada || sel.has(item.id)
+    const bloqueado = entrada && temHospedagem
     const n = unidades(item.cobranca, pessoas)
     return (
       <li key={item.id}>
@@ -128,9 +129,10 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
           type="button"
           role="checkbox"
           aria-checked={marcado && !bloqueado}
+          aria-disabled={entrada || undefined}
           disabled={bloqueado}
           onClick={() => alternar(item)}
-          className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left ring-1 ring-inset transition-colors disabled:opacity-50 ${
+          className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left sm:py-3.5 ring-1 ring-inset transition-colors disabled:opacity-50 ${entrada ? 'cursor-default' : ''} ${
             marcado && !bloqueado ? 'bg-agua/10 ring-agua' : 'bg-pedra/60 ring-linha hover:ring-agua/50'
           }`}
         >
@@ -147,7 +149,14 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
             )}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[15px] leading-tight font-semibold">{item.nome}</span>
+            <span className="flex items-center gap-2 text-[15px] leading-tight font-semibold">
+              {item.nome}
+              {entrada && !bloqueado && (
+                <span className="rounded-full bg-laranja/15 px-2 py-0.5 font-rotulo text-[9px] font-medium uppercase tracking-[.14em] text-laranja">
+                  {PACK.obrigatoria}
+                </span>
+              )}
+            </span>
             <span className="mt-0.5 block text-[12px] text-bruma">
               {bloqueado ? PACK.inclusaNaHospedagem : `${real(item.preco)} ${porQue(item.cobranca)}`}
             </span>
@@ -170,13 +179,13 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="pack-titulo"
-        className="flex max-h-[92svh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-noite text-neve shadow-2xl sm:rounded-3xl"
+        className="flex max-h-[92svh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-noite text-neve shadow-2xl supports-[height:100dvh]:max-h-[calc(100dvh-2.5rem)] sm:rounded-3xl sm:supports-[height:100dvh]:max-h-[90dvh]"
       >
         {/* Cabeçalho */}
-        <div className="flex items-start justify-between gap-4 border-b border-linha px-5 pt-5 pb-4 sm:px-6">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-linha px-5 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4">
           <div>
-            <h2 id="pack-titulo" className="font-titulo text-3xl leading-none">{PACK.titulo}</h2>
-            <p className="mt-2 text-sm leading-snug text-bruma">{PACK.intro}</p>
+            <h2 id="pack-titulo" className="font-titulo text-[1.75rem] leading-none sm:text-3xl">{PACK.titulo}</h2>
+            <p className="mt-1.5 text-[13px] leading-snug text-bruma sm:text-sm">{PACK.intro}</p>
           </div>
           <button
             ref={fechar}
@@ -192,7 +201,7 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
         </div>
 
         {/* Escolhas */}
-        <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5 sm:px-6">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-4 sm:space-y-6 sm:px-6 sm:py-5">
           <section>
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-rotulo text-[10px] uppercase tracking-[.2em] text-agua">{PACK.grupoAtividades}</h3>
@@ -200,17 +209,17 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
                 {todasAtividades ? 'Desmarcar todas' : PACK.tudo}
               </button>
             </div>
-            <ul className="mt-3 space-y-2">{ITENS.filter((i) => i.grupo === 'atividade').map(linha)}</ul>
+            <ul className="mt-2.5 space-y-2">{ITENS.filter((i) => i.grupo === 'atividade').map(linha)}</ul>
           </section>
 
           <section>
             <h3 className="font-rotulo text-[10px] uppercase tracking-[.2em] text-agua">{PACK.grupoHospedagem}</h3>
-            <ul className="mt-3 space-y-2">{ITENS.filter((i) => i.grupo === 'hospedagem').map(linha)}</ul>
+            <ul className="mt-2.5 space-y-2">{ITENS.filter((i) => i.grupo === 'hospedagem').map(linha)}</ul>
           </section>
 
           <section>
             <h3 className="font-rotulo text-[10px] uppercase tracking-[.2em] text-agua">{PACK.grupoEntrada}</h3>
-            <ul className="mt-3 space-y-2">{ITENS.filter((i) => i.grupo === 'entrada').map(linha)}</ul>
+            <ul className="mt-2.5 space-y-2">{ITENS.filter((i) => i.grupo === 'entrada').map(linha)}</ul>
           </section>
 
           <section className="grid gap-5 sm:grid-cols-2">
@@ -247,15 +256,14 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
         </div>
 
         {/* Total e envio */}
-        <div className="border-t border-linha bg-mata px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
+        <div className="shrink-0 border-t border-linha bg-mata px-5 pt-3 pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+.75rem))] sm:px-6 sm:pt-4">
           <div className="flex items-baseline justify-between gap-4">
             <span className="text-sm font-semibold">{PACK.total}</span>
             <span className="font-rotulo text-2xl tabular-nums text-agua">{real(total)}</span>
           </div>
-          <p className="mt-1 text-[12px] text-bruma">{PACK.aviso}</p>
-          {escolhidos.length > 0 ? (
+          <p className="mt-0.5 text-[12px] text-bruma">{PACK.aviso}</p>
             <div
-              className="mt-4 [&>a]:w-full [&>a]:justify-between"
+              className="mt-3 [&>a]:w-full [&>a]:justify-between"
               onClickCapture={() =>
                 rastrear('pack_enviado', {
                   itens: escolhidos.map((i) => i.nome).join(' + ').slice(0, 150),
@@ -265,11 +273,10 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
                 })
               }
             >
-              <Botao href={linkWhatsAppTexto(WHATSAPP, origem, mensagem)}>{PACK.chamada}</Botao>
+              <Botao href={linkWhatsAppTexto(WHATSAPP, origem, mensagem)} pulso={false}>
+                {PACK.chamada}
+              </Botao>
             </div>
-          ) : (
-            <p className="mt-4 rounded-full bg-pedra py-4 text-center text-sm font-semibold text-bruma">{PACK.vazio}</p>
-          )}
         </div>
       </div>
     </div>

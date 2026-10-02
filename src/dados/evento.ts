@@ -165,7 +165,7 @@ export const VISITACAO = {
   precoNumero: 20,
   preco: 'R$ 20',
   descricao:
-    'Entrada no espaço, sem atividades. Dá acesso à área, ao restaurante e às cachoeiras abertas à visitação.',
+    'Obrigatória para todos que entram, com ou sem atividade. Dá acesso à área, ao restaurante e às cachoeiras abertas à visitação. Já inclusa na hospedagem.',
 } as const
 
 export const HOSPEDAGEM_SECAO = {
@@ -214,18 +214,18 @@ export const HOSPEDAGEM: Hospedagem[] = [
  */
 export const PACK = {
   titulo: 'Monte o seu sábado',
-  intro: 'Escolha de 1 serviço até todos. A gente confirma vagas e valores no WhatsApp.',
+  intro: 'A entrada já vem somada no total. Escolha de 1 atividade até todas.',
   grupoAtividades: 'Atividades',
   grupoHospedagem: 'Hospedagem (escolha uma)',
-  grupoEntrada: 'Só quer conhecer o lugar?',
+  grupoEntrada: 'Entrada',
+  obrigatoria: 'Obrigatória',
   tudo: 'Quero todas as atividades',
   pessoas: 'Quantas pessoas',
   turno: 'Turno',
   semTurno: 'Ainda não sei',
   total: 'Total estimado',
   aviso: 'Estimativa. O valor final é confirmado no WhatsApp.',
-  vazio: 'Escolha pelo menos um serviço',
-  chamada: 'Enviar meu pack pelo WhatsApp',
+  chamada: 'Enviar pelo WhatsApp',
   inclusaNaHospedagem: 'Inclusa na hospedagem',
   porVeiculo: 'por veículo (até 4)',
   porCasal: 'pelo casal',
