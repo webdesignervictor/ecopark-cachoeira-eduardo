@@ -67,10 +67,49 @@
   to { transform: translateX(-50%); }
 }
 
+/*
+ * Borda viva dos cards em destaque: um brilho laranja que percorre o contorno.
+ * Desenhada por cima do card (::after com máscara), então não muda o tamanho dele.
+ */
+@property --angulo-borda {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.borda-viva {
+  box-shadow: 0 0 22px rgba(232, 89, 12, .35);
+}
+.borda-viva::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--angulo-borda),
+    var(--color-laranja) 0deg,
+    #ffd2ad 40deg,
+    var(--color-laranja) 90deg,
+    var(--color-laranja-forte) 200deg,
+    var(--color-laranja) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borda-gira 3.5s linear infinite;
+}
+@keyframes borda-gira {
+  to { --angulo-borda: 360deg; }
+}
+
 html { scroll-behavior: smooth; scroll-padding-top: 3.5rem; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  /* Sem isso a borda giraria numa velocidade absurda (duração mínima + loop infinito): fica parada. */
+  .borda-viva::after { animation-name: none !important; }
 }
 /* Blocos escuros sobre a página clara (vídeos, fecho, rodapé): os mesmos tokens, invertidos. */
 .tema-escuro {

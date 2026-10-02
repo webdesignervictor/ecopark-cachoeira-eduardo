@@ -8,9 +8,10 @@ Tudo em `src/dados/`:
 
 | Arquivo | Campo | O que falta |
 |---|---|---|
-| `evento.ts` | `WHATSAPP` | Número em formato internacional, só dígitos (ex.: `5516999999999`). Hoje está `[PREENCHER]` e o botão não funciona. |
+| `evento.ts` | `WHATSAPP` | ✅ Preenchido: `5511942532086` (Eduardo). Formato internacional, só dígitos. |
 | `evento.ts` | `LINK_PAGAMENTO` | Opcional. Link de checkout, se um dia houver. Vazio = o botão cai no WhatsApp (a reserva não exige sinal). |
 | `pixel.ts` | `PIXEL_META` | ID do pixel, depois que a conta de anúncio do cliente existir. Vazio = nada é carregado. |
+| `.env` (ou Vercel) | `VITE_SITE_URL` | Endereço do site sem barra no final. Vai nas tags de compartilhamento (prévia no WhatsApp), no canonical, nos dados de Evento do Google e gera o `sitemap.xml`. Vazio = tags relativas e sem sitemap. |
 | `medicao.ts` | `GA4_ID`, `CLARITY_ID` | Opcionais. Google Analytics 4 e Microsoft Clarity (gravação de sessões e mapa de calor). Vazio = não carrega. |
 | Vercel | `DATABASE_URL` | Conexão do Postgres onde as ações ficam gravadas. Sem ela a página funciona, mas nada é guardado. Ver "Banco de medição". |
 
@@ -109,6 +110,25 @@ Visões prontas para consultar: `resumo_secoes` (pessoas e tempo médio por seç
 **LGPD:** nenhum dado pessoal é gravado (nome, telefone, IP), mas há um identificador anônimo
 guardado no aparelho. Se a página for usar Pixel/GA4/Clarity em campanha, o recomendado é ter
 um aviso de cookies com consentimento.
+
+## Monte seu pack
+
+Os botões de reserva (topo, atividades, fecho, barra fixa e "Reservar" da hospedagem) abrem o painel
+"Monte o seu sábado" (`src/componentes/MontePack.tsx`): a pessoa marca de 1 serviço a todos, escolhe
+pessoas e turno, vê o total estimado e envia o pack escrito no WhatsApp.
+
+- Preços e forma de cobrança vêm de `ATIVIDADES`, `HOSPEDAGEM` e `VISITACAO` (`precoNumero` e `cobranca`:
+  por pessoa, por veículo de até 4, ou pelo casal). Textos do painel em `PACK`.
+- Hospedagem é uma só; com hospedagem, a visitação aparece como inclusa.
+- Se `LINK_PAGAMENTO` for preenchido, os botões vão direto para o checkout.
+- Medição: `pack_aberto`, `pack_item`, `pack_todas`, `pack_enviado` (itens, pessoas, total) e `clique_whatsapp`.
+
+## SEO e ícones
+
+`index.html`: título, descrição, canonical, prévia de compartilhamento (`imagens/compartilhar.jpg`, 1200×630)
+e dados estruturados de Evento (data, local, preço) — manter em sincronia com `evento.ts`.
+Ícones em `public/`: `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icone-512.png`, `site.webmanifest`.
+`robots.txt` e `sitemap.xml` são gerados no build (`vite.config.ts`).
 
 ## Rodar
 

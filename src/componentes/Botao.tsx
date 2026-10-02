@@ -5,6 +5,10 @@ interface Props {
   tamanho?: 'normal' | 'compacto'
   className?: string
   tabIndex?: number
+  /** Ação no clique (ex.: abrir o Monte seu pack). O href continua como reserva sem JavaScript. */
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
+  /** Nome da ação na medição (data-evento), quando o clique não é o próprio link. */
+  evento?: string
 }
 
 /**
@@ -14,7 +18,7 @@ interface Props {
  * Tudo some com "reduzir movimento" (motion-safe).
  */
 export function Botao({
-  href, children, variante = 'cheio', tamanho = 'normal', className = '', tabIndex,
+  href, children, variante = 'cheio', tamanho = 'normal', className = '', tabIndex, onClick, evento,
 }: Props) {
   const cheio = variante === 'cheio'
   const compacto = tamanho === 'compacto'
@@ -37,6 +41,8 @@ export function Botao({
       target="_blank"
       rel="noopener noreferrer"
       tabIndex={tabIndex}
+      onClick={onClick}
+      data-evento={evento}
       className={`group relative isolate inline-flex w-fit items-center self-start overflow-hidden sm:self-auto rounded-full font-semibold transition-transform duration-150 active:scale-[.97] ${casca} ${medidas} ${className}`}
     >
       {cheio && (

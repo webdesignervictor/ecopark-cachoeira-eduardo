@@ -72,3 +72,9 @@ export function linkWhatsApp(
   const texto = `Oi! ${pedido} — ${assunto}.\n\n(origem: ${rotuloOrigem(origem)})`
   return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 }
+
+/** Link do WhatsApp com uma mensagem livre (várias linhas) e a origem no fim. */
+export function linkWhatsAppTexto(numero: string, origem: Origem, corpo: string): string {
+  const texto = `Oi! ${corpo}\n\n(origem: ${rotuloOrigem(origem)})`
+  return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+}

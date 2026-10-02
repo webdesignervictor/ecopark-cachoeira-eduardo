@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ATIVIDADES, AVALIACOES, BARRA, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_IMAGEM, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
+  ATIVIDADES, AVALIACOES, BARRA, idHospedagem, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_IMAGEM, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
   HOSPEDAGEM_SECAO,
   LINK_PAGAMENTO, LOCALIZACAO, OBJECOES, PARA_QUEM, RESTAURANTE, RODAPE, TOPO, TOPO_MIDIA,
   VISITACAO, WHATSAPP,
@@ -12,6 +12,7 @@ import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
 import { Estrelas } from './componentes/Estrelas'
 import { CarrosselAvaliacoes } from './componentes/CarrosselAvaliacoes'
+import { MontePack } from './componentes/MontePack'
 import { Secao } from './componentes/Secao'
 import { MidiaFundo } from './componentes/MidiaFundo'
 import { BarraReserva } from './componentes/BarraReserva'
@@ -23,6 +24,16 @@ export default function App() {
   useEffect(() => iniciarMedicao(origem), [origem])
   const destino = (assunto: string) =>
     LINK_PAGAMENTO || linkWhatsApp(WHATSAPP, origem, assunto)
+
+  // Monte seu pack: os botões de reserva abrem o painel com o serviço do botão já marcado.
+  const [pack, setPack] = useState<{ aberto: boolean; inicial: string[] }>({ aberto: false, inicial: [] })
+  const fecharPack = useCallback(() => setPack((p) => ({ ...p, aberto: false })), [])
+  const abrirPack = (inicial: string[]) => (e: React.MouseEvent) => {
+    if (LINK_PAGAMENTO) return // com checkout próprio, o botão segue direto para ele
+    e.preventDefault()
+    setPack({ aberto: true, inicial })
+  }
+  const reservar = { onClick: abrirPack(['rope-jump']), evento: 'pack_aberto' }
 
   // A barra fixa só aparece quando nenhum dos botões grandes (topo e fecho) está na tela.
   const topoRef = useRef<HTMLElement>(null)
@@ -72,7 +83,7 @@ export default function App() {
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-bruma sm:text-xl">{TOPO.subtitulo}</p>
 
           <div className="mt-7 flex flex-col">
-            <Botao href={destino('Rope Jump')} className="max-sm:self-center">{TOPO.chamada}</Botao>
+            <Botao href={destino('Rope Jump')} {...reservar} className="max-sm:self-center">{TOPO.chamada}</Botao>
           </div>
 
           <a
@@ -183,7 +194,7 @@ export default function App() {
               key={a.slug}
               src={a.video}
               poster={a.imagem}
-              className={a.destaque ? 'ring-4 ring-laranja' : ''}
+              className={a.destaque ? 'borda-viva' : ''}
             >
               {a.destaque && (
                 <span className="mb-2 inline-block rounded-full bg-laranja px-2.5 py-1 font-rotulo text-[9px] font-medium uppercase tracking-[.16em] text-white">
@@ -211,7 +222,7 @@ export default function App() {
             </div>
             <p className="mt-2 text-[15px] leading-relaxed text-bruma">{VISITACAO.descricao}</p>
           </div>
-          <Botao href={destino('Rope Jump')} className="shrink-0">
+          <Botao href={destino('Rope Jump')} {...reservar} className="shrink-0">
             Quero saltar
           </Botao>
         </div>
@@ -228,7 +239,7 @@ export default function App() {
 
         <Trilho colunas={3} className="mt-8">
           {HOSPEDAGEM.map((h) => (
-            <VideoVertical key={h.nome} src={h.video} poster={h.imagem} className={h.destaque ? 'ring-4 ring-laranja' : ''}>
+            <VideoVertical key={h.nome} src={h.video} poster={h.imagem} className={h.destaque ? 'borda-viva' : ''}>
               {h.selo && (
                 <span
                   className={`mb-2 inline-block rounded-full px-2.5 py-1 font-rotulo text-[9px] font-medium uppercase tracking-[.16em] ${
@@ -243,6 +254,8 @@ export default function App() {
               <p className="mt-1 text-[13px] leading-snug text-bruma">{h.detalhe}</p>
               <Botao
                 href={linkWhatsApp(WHATSAPP, origem, h.nome, HOSPEDAGEM_SECAO.pedido)}
+                onClick={abrirPack([idHospedagem(h.nome)])}
+                evento="pack_aberto"
                 tamanho="compacto"
                 variante={h.destaque ? 'cheio' : 'vazado'}
                 className="mt-4"
@@ -357,7 +370,7 @@ export default function App() {
             </h2>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-bruma sm:text-lg">{FECHO.texto}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Botao href={destino('Rope Jump')}>{FECHO.chamada}</Botao>
+              <Botao href={destino('Rope Jump')} {...reservar}>{FECHO.chamada}</Botao>
               <span className="font-rotulo text-xs uppercase tracking-[.16em] text-bruma">
                 Outras datas: {EVENTO.outrasDatas}
               </span>
@@ -379,10 +392,12 @@ export default function App() {
       <BarraReserva
         visivel={visiveis.size === 0}
         href={destino('Rope Jump')}
+        {...reservar}
         titulo={BARRA.titulo}
         apoio={BARRA.apoio}
         chamada={BARRA.chamada}
       />
+      {pack.aberto && <MontePack inicial={pack.inicial} origem={origem} onFechar={fecharPack} />}
     </main>
   )
 }

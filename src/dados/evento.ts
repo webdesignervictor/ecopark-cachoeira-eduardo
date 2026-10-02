@@ -8,6 +8,8 @@ export interface Atividade {
   nome: string
   preco: string
   precoNumero: number
+  /** Como o preço multiplica no pack: por pessoa (padrão) ou por veículo de até 4 pessoas. */
+  cobranca?: 'pessoa' | 'veiculo'
   descricao: string
   destaque?: boolean
   observacao?: string
@@ -20,6 +22,9 @@ export interface Atividade {
 export interface Hospedagem {
   nome: string
   preco: string
+  precoNumero: number
+  /** Por pessoa ou pelo casal (até 2 pessoas). */
+  cobranca: 'pessoa' | 'casal'
   detalhe: string
   video: string
   /** Imagem 9:16 mostrada enquanto o vídeo não existe. */
@@ -149,6 +154,7 @@ export const ATIVIDADES: Atividade[] = [
     nome: 'Morro da Mesa · 4x4',
     preco: 'R$ 500',
     precoNumero: 500,
+    cobranca: 'veiculo',
     descricao: 'Passeio de 4x4 até o alto do morro.',
     observacao: 'Valor por veículo, até 4 pessoas',
   },
@@ -156,6 +162,7 @@ export const ATIVIDADES: Atividade[] = [
 
 export const VISITACAO = {
   nome: 'Taxa de visitação',
+  precoNumero: 20,
   preco: 'R$ 20',
   descricao:
     'Entrada no espaço, sem atividades. Dá acesso à área, ao restaurante e às cachoeiras abertas à visitação.',
@@ -174,12 +181,16 @@ export const HOSPEDAGEM: Hospedagem[] = [
   {
     nome: 'Camping · diária',
     preco: 'R$ 50',
+    precoNumero: 50,
+    cobranca: 'pessoa',
     detalhe: 'Por pessoa, de sábado a domingo',
     video: '/videos/camping.mp4',
   },
   {
     nome: 'Camping · fim de semana',
     preco: 'R$ 70',
+    precoNumero: 70,
+    cobranca: 'pessoa',
     detalhe: 'Por pessoa, de sexta a domingo',
     video: '/videos/camping-fds.mp4',
     imagem: '/imagens/ia/camping-fds.jpg',
@@ -188,12 +199,45 @@ export const HOSPEDAGEM: Hospedagem[] = [
   {
     nome: 'Chalé casal',
     preco: 'R$ 350',
+    precoNumero: 350,
+    cobranca: 'casal',
     detalhe: 'O casal, de sexta a domingo',
     video: '/videos/chale.mp4',
     selo: 'Para casal',
     destaque: true,
   },
 ]
+
+/**
+ * Monte seu pack: abre ao clicar nos botões de reserva. A pessoa escolhe de 1 serviço a todos,
+ * diz quantas pessoas e o turno, vê o total estimado e manda tudo pronto no WhatsApp.
+ */
+export const PACK = {
+  titulo: 'Monte o seu sábado',
+  intro: 'Escolha de 1 serviço até todos. A gente confirma vagas e valores no WhatsApp.',
+  grupoAtividades: 'Atividades',
+  grupoHospedagem: 'Hospedagem (escolha uma)',
+  grupoEntrada: 'Só quer conhecer o lugar?',
+  tudo: 'Quero todas as atividades',
+  pessoas: 'Quantas pessoas',
+  turno: 'Turno',
+  semTurno: 'Ainda não sei',
+  total: 'Total estimado',
+  aviso: 'Estimativa. O valor final é confirmado no WhatsApp.',
+  vazio: 'Escolha pelo menos um serviço',
+  chamada: 'Enviar meu pack pelo WhatsApp',
+  inclusaNaHospedagem: 'Inclusa na hospedagem',
+  porVeiculo: 'por veículo (até 4)',
+  porCasal: 'pelo casal',
+  porPessoa: 'por pessoa',
+  /** Primeira linha da mensagem do WhatsApp. */
+  pedido: 'Quero montar meu pack para o dia 10/10:',
+} as const
+
+/** Id de uma hospedagem no Monte seu pack (o card de hospedagem abre o pack com ela marcada). */
+export function idHospedagem(nome: string) {
+  return `hospedagem:${nome}`
+}
 
 export const HOSPEDAGEM_NOTA = 'Taxa de visitação já inclusa na hospedagem.'
 
@@ -324,7 +368,7 @@ export const FECHO = {
 } as const
 
 /** Número do WhatsApp em formato internacional, só dígitos. */
-export const WHATSAPP = '[PREENCHER]'
+export const WHATSAPP = '5511942532086'
 
 /** Link de checkout, se um dia houver. Vazio = botão cai no WhatsApp. */
 export const LINK_PAGAMENTO = ''

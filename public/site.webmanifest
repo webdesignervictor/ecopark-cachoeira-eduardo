@@ -1,0 +1,13 @@
+{
+  "name": "Rope Jump na Cachoeira do Esmeril",
+  "short_name": "Esmeril 10/10",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f2118",
+  "theme_color": "#0f2118",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icone-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
