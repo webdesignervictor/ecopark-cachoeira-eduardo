@@ -162,10 +162,8 @@ export const ATIVIDADES: Atividade[] = [
 
 export const VISITACAO = {
   nome: 'Taxa de visitação',
+  /** Obrigatória para todos, já inclusa na hospedagem. Cobrada no Monte seu pack. */
   precoNumero: 20,
-  preco: 'R$ 20',
-  descricao:
-    'Obrigatória para todos que entram, com ou sem atividade. Dá acesso à área, ao restaurante e às cachoeiras abertas à visitação. Já inclusa na hospedagem.',
 } as const
 
 export const HOSPEDAGEM_SECAO = {

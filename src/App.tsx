@@ -3,7 +3,7 @@ import {
   ATIVIDADES, AVALIACOES, BARRA, idHospedagem, COMO_FUNCIONA, CONTADOR, EVENTO, FECHO, FECHO_IMAGEM, FECHO_VIDEO, GALERIA, HOSPEDAGEM, HOSPEDAGEM_NOTA,
   HOSPEDAGEM_SECAO,
   LINK_PAGAMENTO, LOCALIZACAO, OBJECOES, PARA_QUEM, RESTAURANTE, RODAPE, TOPO, TOPO_MIDIA,
-  VISITACAO, WHATSAPP,
+  WHATSAPP,
 } from './dados/evento'
 import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
 import { iniciarMedicao } from './dados/medicao'
@@ -213,19 +213,6 @@ export default function App() {
           ))}
         </Trilho>
         <AvisoIlustracao />
-
-        <div className="mt-8 flex flex-col gap-6 rounded-2xl bg-white/10 p-6 shadow-lg shadow-black/20 ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div className="max-w-2xl">
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h3 className="text-lg font-semibold">{VISITACAO.nome}</h3>
-              <p className="font-rotulo text-lg tabular-nums text-agua">{VISITACAO.preco}</p>
-            </div>
-            <p className="mt-2 text-[15px] leading-relaxed text-bruma">{VISITACAO.descricao}</p>
-          </div>
-          <Botao href={destino('Rope Jump')} {...reservar} className="shrink-0">
-            Quero saltar
-          </Botao>
-        </div>
       </Secao>
 
       {/* 06 · Hospedagem */}
