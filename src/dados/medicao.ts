@@ -30,10 +30,27 @@ type Janela = Window & {
 }
 const w = () => window as Janela
 
-/** Ações que viram evento padrão do Meta (é o que otimiza a campanha). */
+/**
+ * Ações que viram evento padrão do Meta (é o que otimiza a campanha):
+ * - abriu o Monte seu pack → InitiateCheckout (começou a montar o pedido);
+ * - enviou o pack → Lead, com o valor estimado em reais (o Meta aprende quem gasta mais);
+ * - qualquer clique para o WhatsApp → Contact.
+ */
 const PADRAO_META: Record<string, string> = {
+  pack_aberto: 'InitiateCheckout',
+  pack_enviado: 'Lead',
   clique_whatsapp: 'Contact',
-  clique_hospedagem: 'Lead',
+}
+
+/** Parâmetros no formato que o Meta entende (valor e moeda no Lead do pack). */
+function paramsMeta(nome: string, dados: Dados): Dados {
+  if (nome !== 'pack_enviado') return dados
+  return {
+    value: Number(dados.total) || 0,
+    currency: 'BRL',
+    content_name: String(dados.itens ?? ''),
+    num_items: Number(dados.quantidade) || 0,
+  }
 }
 
 /** Ações que acontecem antes de os scripts carregarem esperam aqui e saem assim que eles sobem. */
@@ -55,7 +72,7 @@ function enviar(nome: string, dados: Dados): void {
   const j = w()
   if (PIXEL_META && j.fbq) {
     const padrao = PADRAO_META[nome]
-    if (padrao) j.fbq('track', padrao, dados)
+    if (padrao) j.fbq('track', padrao, paramsMeta(nome, dados))
     else j.fbq('trackCustom', nome, dados)
   }
   if (GA4_ID && j.gtag) j.gtag('event', nome, dados)
@@ -421,6 +438,8 @@ export function iniciarMedicao(origem: Origem): void {
     carregado = true
     for (const [nome, dados] of pendentes.splice(0)) enviar(nome, dados)
   }
+  // Ferramentas de terceiros: carregam depois da página aberta, independente do aviso de cookies
+  // (decisão do cliente: o aviso é informativo, com um botão só).
   if (document.readyState === 'complete') setTimeout(carregar, 0)
   else window.addEventListener('load', () => setTimeout(carregar, 0), { once: true })
 }

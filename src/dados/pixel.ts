@@ -3,7 +3,7 @@
  * com ID vazio nada é carregado e nenhum dado sai da página.
  * Os eventos saem por `rastrear()`, em medicao.ts.
  */
-export const PIXEL_META = ''
+export const PIXEL_META = '1570101697673660'
 
 export function iniciarPixel(): void {
   if (!PIXEL_META || typeof window === 'undefined') return

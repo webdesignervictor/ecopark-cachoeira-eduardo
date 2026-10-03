@@ -371,6 +371,13 @@ export const WHATSAPP = '5511942532086'
 /** Link de checkout, se um dia houver. Vazio = botão cai no WhatsApp. */
 export const LINK_PAGAMENTO = ''
 
+/** Aviso de cookies: informativo, com um botão só. A medição carrega com ou sem aceite. */
+export const AVISO_COOKIES = {
+  texto:
+    'Usamos cookies para medir as visitas e melhorar nossos anúncios.',
+  chamada: 'Aceitar',
+} as const
+
 export const RODAPE = {
   negocio: 'Cachoeira do Esmeril',
   local: 'Patrocínio Paulista · SP',

@@ -10,7 +10,7 @@ Tudo em `src/dados/`:
 |---|---|---|
 | `evento.ts` | `WHATSAPP` | ✅ Preenchido: `5511942532086` (Eduardo). Formato internacional, só dígitos. |
 | `evento.ts` | `LINK_PAGAMENTO` | Opcional. Link de checkout, se um dia houver. Vazio = o botão cai no WhatsApp (a reserva não exige sinal). |
-| `pixel.ts` | `PIXEL_META` | ID do pixel, depois que a conta de anúncio do cliente existir. Vazio = nada é carregado. |
+| `pixel.ts` | `PIXEL_META` | ✅ Preenchido: `1570101697673660`. Eventos: PageView, InitiateCheckout (abriu o pack), Lead com valor em R$ (enviou o pack), Contact (clicou no WhatsApp). |
 | `.env` (ou Vercel) | `VITE_SITE_URL` | Endereço do site sem barra no final. Vai nas tags de compartilhamento (prévia no WhatsApp), no canonical, nos dados de Evento do Google e gera o `sitemap.xml`. Vazio = tags relativas e sem sitemap. |
 | `medicao.ts` | `GA4_ID`, `CLARITY_ID` | Opcionais. Google Analytics 4 e Microsoft Clarity (gravação de sessões e mapa de calor). Vazio = não carrega. |
 | Vercel | `DATABASE_URL` | Conexão do Postgres onde as ações ficam gravadas. Sem ela a página funciona, mas nada é guardado. Ver "Banco de medição". |
