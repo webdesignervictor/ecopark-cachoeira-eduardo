@@ -81,7 +81,8 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
         <video
           ref={ref}
           src={perto ? src : undefined}
-          poster={poster}
+          // A capa também espera o card chegar perto: <video poster> não tem carregamento preguiçoso.
+          poster={perto ? poster : undefined}
           muted
           loop
           playsInline

@@ -183,6 +183,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     cobranca: 'pessoa',
     detalhe: 'Por pessoa, de sábado a domingo',
     video: '/videos/camping.mp4',
+    imagem: '/imagens/ia/camping.jpg',
   },
   {
     nome: 'Camping · fim de semana',
@@ -201,6 +202,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     cobranca: 'casal',
     detalhe: 'O casal, de sexta a domingo',
     video: '/videos/chale.mp4',
+    imagem: '/imagens/ia/chale.jpg',
     selo: 'Para casal',
     destaque: true,
   },

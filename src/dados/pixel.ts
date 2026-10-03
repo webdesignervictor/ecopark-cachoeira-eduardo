@@ -1,7 +1,7 @@
 /**
- * Pixel do Meta. Deixe o ID vazio até a conta de anúncio do cliente existir —
- * com ID vazio nada é carregado e nenhum dado sai da página.
- * Os eventos saem por `rastrear()`, em medicao.ts.
+ * Pixel do Meta. O código-base (init + PageView) está no <head> do index.html, como o Meta pede;
+ * iniciarPixel() abaixo só age se ele não estiver lá (é a reserva). Ao trocar o ID, troque nos dois lugares.
+ * Os demais eventos (InitiateCheckout, Lead, Contact…) saem por `rastrear()`, em medicao.ts.
  */
 export const PIXEL_META = '1570101697673660'
 

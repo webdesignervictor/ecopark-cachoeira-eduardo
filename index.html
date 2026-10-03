@@ -79,6 +79,22 @@
       }
     </script>
 
+    <!-- Meta Pixel Code (padrão do Meta, no head para ser reconhecido pelo Pixel Helper/Gerenciador de Eventos).
+         Carrega assíncrono, sem travar a abertura. Os demais eventos saem por src/dados/medicao.ts. -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1570101697673660');
+      fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
     <!-- Fontes servidas pelo próprio site (sem ida ao Google) e a foto da hero, que é o que aparece primeiro. -->
     <link rel="preload" href="/fontes/figtree.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fontes/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
