@@ -34,16 +34,22 @@ const w = () => window as Janela
  * Ações que viram evento padrão do Meta (é o que otimiza a campanha):
  * - abriu o Monte seu pack → InitiateCheckout (começou a montar o pedido);
  * - enviou o pack → Lead, com o valor estimado em reais (o Meta aprende quem gasta mais);
- * - qualquer clique para o WhatsApp → Contact.
+ * - qualquer clique para o WhatsApp → Contact;
+ * - tocou em "Pagar agora" → AddPaymentInfo, com o valor;
+ * - voltou do Mercado Pago com pagamento aprovado → Purchase, com o valor pago.
  */
 const PADRAO_META: Record<string, string> = {
   pack_aberto: 'InitiateCheckout',
   pack_enviado: 'Lead',
   clique_whatsapp: 'Contact',
+  pagamento_iniciado: 'AddPaymentInfo',
+  compra: 'Purchase',
 }
 
 /** Parâmetros no formato que o Meta entende (valor e moeda no Lead do pack). */
 function paramsMeta(nome: string, dados: Dados): Dados {
+  if (nome === 'compra') return { value: Number(dados.valor) || 0, currency: 'BRL' }
+  if (nome === 'pagamento_iniciado') return { value: Number(dados.total) || 0, currency: 'BRL', num_items: Number(dados.quantidade) || 0 }
   if (nome !== 'pack_enviado') return dados
   return {
     value: Number(dados.total) || 0,

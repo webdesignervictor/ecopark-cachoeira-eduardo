@@ -1,27 +1,41 @@
 /**
- * Recebe os lotes de ações da página (src/dados/banco.ts) e grava no Postgres.
- * Roda como função do Vercel. A conexão vem da variável de ambiente DATABASE_URL.
+ * Recebe os lotes de ações da página (src/dados/banco.ts) e grava no Postgres (schema "medicao").
+ * Roda como função do Vercel. Conexão: DATABASE_URL, com o usuário medicao_site (só insere).
  *
+ * Proteções: só aceita pedidos da própria página, limite de pedidos por IP, corpo pequeno,
+ * nomes e dados validados, e um teto de eventos por visita no próprio banco.
  * Sem DATABASE_URL, responde 204 e descarta — a página nunca quebra por causa da medição.
  */
-import postgres from 'postgres'
-
-const url = process.env.DATABASE_URL
-// prepare: false funciona com os "poolers" do Neon e do Supabase.
-// SSL obrigatório nos provedores; desligado só para um banco local de teste.
-const local = !!url && /@(localhost|127\.0\.0\.1)[:/]/.test(url)
-const sql = url ? postgres(url, { ssl: local ? false : 'require', max: 1, prepare: false, idle_timeout: 20 }) : null
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
-/** Texto limpo e curto, ou null. Tudo que chega da página é tratado como não confiável. */
-const txt = (v: unknown, max = 120): string | null =>
-  typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null
-
-const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : null)
+import { banco } from './_lib/db'
+import { UUID, dentroDoLimite, lerJson, num, origemValida, sem, txt } from './_lib/protecao'
 
 type Obj = Record<string, unknown>
 const obj = (v: unknown): Obj => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Obj) : {})
+const bool = (v: unknown) => (typeof v === 'boolean' ? v : null)
+const real = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+
+const NOME_EVENTO = /^[a-z][a-z0-9_]{1,59}$/
+const CHAVE_DADO = /^[a-z][a-z0-9_]{0,39}$/
+
+/** Mantém só pares chave → texto/número simples (no máximo 20), descartando o resto. */
+function limparDados(d: Obj): Record<string, string | number> {
+  const limpo: Record<string, string | number> = {}
+  for (const [k, v] of Object.entries(d).slice(0, 20)) {
+    if (!CHAVE_DADO.test(k)) continue
+    if (typeof v === 'number' && Number.isFinite(v)) limpo[k] = v
+    else if (typeof v === 'string') limpo[k] = v.slice(0, 200)
+  }
+  return limpo
+}
+
+/** Hora do aparelho, aceita só se estiver perto do agora (relógio errado ou forjado vira "agora"). */
+function quandoValido(v: unknown): Date {
+  const d = new Date(typeof v === 'string' ? v : NaN)
+  const agora = Date.now()
+  return Number.isNaN(d.getTime()) || d.getTime() < agora - 86_400_000 || d.getTime() > agora + 300_000
+    ? new Date()
+    : d
+}
 
 /** Cabeçalhos de localização que o Vercel preenche pelo IP (o IP não é guardado). */
 const geo = (req: Request, nome: string) => {
@@ -30,34 +44,47 @@ const geo = (req: Request, nome: string) => {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  if (!sql) return new Response(null, { status: 204 })
+  const sql = banco('DATABASE_URL')
+  if (!sql) return sem(204)
+  if (!origemValida(req)) return sem(403)
+  if (!dentroDoLimite(req, 120, 'eventos:')) return sem(429)
 
-  let corpo: Obj
-  try {
-    const bruto = await req.text()
-    if (bruto.length > 100_000) return new Response(null, { status: 413 })
-    corpo = obj(JSON.parse(bruto))
-  } catch {
-    return new Response(null, { status: 400 })
-  }
+  const corpo = await lerJson(req, 100_000)
+  if (!corpo) return sem(400)
 
   const sessao = txt(corpo.sessao, 36)
   const visitante = txt(corpo.visitante, 36)
-  if (!sessao || !visitante || !UUID.test(sessao) || !UUID.test(visitante)) {
-    return new Response(null, { status: 400 })
-  }
+  if (!sessao || !visitante || !UUID.test(sessao) || !UUID.test(visitante)) return sem(400)
 
   const origem = obj(corpo.origem)
   const d = obj(corpo.dispositivo)
   const c = obj(corpo.contexto)
-  const bool = (v: unknown) => (typeof v === 'boolean' ? v : null)
-  const real = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
-  const eventos = (Array.isArray(corpo.eventos) ? corpo.eventos : []).slice(0, 50).map(obj)
+
+  const linhas = (Array.isArray(corpo.eventos) ? corpo.eventos : [])
+    .slice(0, 50)
+    .map(obj)
+    .map((e) => {
+      const nome = txt(e.nome, 60)
+      if (!nome || !NOME_EVENTO.test(nome)) return null
+      const dados = limparDados(obj(e.dados))
+      const segundos = num(dados.segundos)
+      return {
+        sessao,
+        quando: quandoValido(e.quando),
+        nome,
+        secao: txt(dados.secao, 60),
+        segundos: segundos !== null && segundos >= 0 && segundos <= 86_400 ? segundos : null,
+        dados: sql.json(dados),
+      }
+    })
+    .filter((l) => l !== null)
 
   try {
     // A sessão entra no primeiro lote; os seguintes só acrescentam eventos.
+    // "on conflict do nothing" sem citar a coluna: com "(id)" o Postgres exigiria permissão de LEITURA,
+    // e o usuário do site (medicao_site) só pode inserir.
     await sql`
-      insert into sessoes ${sql({
+      insert into medicao.sessoes ${sql({
         id: sessao,
         visitante,
         pagina: txt(corpo.pagina, 200),
@@ -94,30 +121,13 @@ export async function POST(req: Request): Promise<Response> {
         visita_numero: num(c.visita_numero),
         dias_desde_primeira: num(c.dias_desde_primeira),
       })}
-      on conflict (id) do nothing
+      on conflict do nothing
     `
-
-    const linhas = eventos
-      .map((e) => {
-        const dados = obj(e.dados)
-        const quando = new Date(typeof e.quando === 'string' ? e.quando : Date.now())
-        return {
-          sessao,
-          quando: Number.isNaN(quando.getTime()) ? new Date() : quando,
-          nome: txt(e.nome, 60),
-          secao: txt(dados.secao, 60),
-          segundos: num(dados.segundos),
-          // Acima de 2 KB o conteúdo é descartado (nenhuma ação legítima da página chega perto disso).
-          dados: sql.json((JSON.stringify(dados).length <= 2000 ? dados : { cortado: true }) as never),
-        }
-      })
-      .filter((l) => l.nome)
-
-    if (linhas.length) await sql`insert into eventos ${sql(linhas)}`
+    if (linhas.length) await sql`insert into medicao.eventos ${sql(linhas)}`
   } catch (erro) {
-    console.error('medição: falha ao gravar', erro)
-    return new Response(null, { status: 500 })
+    console.error('medição: falha ao gravar', erro instanceof Error ? erro.message : erro)
+    return sem(500)
   }
 
-  return new Response(null, { status: 204 })
+  return sem(204)
 }

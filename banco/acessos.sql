@@ -8,7 +8,8 @@
 -- Rodar outra vez não muda senha de quem já existe (para trocar, veja o fim do arquivo).
 -- Não escreva senha neste arquivo — ele fica no git.
 
-create temporary table senhas_novas (usuario text, senha text) on commit drop;
+-- Temporária: some sozinha quando a conexão fecha (sem "on commit drop", que apagaria antes do uso).
+create temporary table if not exists senhas_novas (usuario text, senha text);
 
 do $$
 declare

@@ -234,6 +234,60 @@ export const PACK = {
   pedido: 'Quero montar meu pack para o dia 10/10:',
 } as const
 
+/**
+ * Pagamento online pelo Mercado Pago (Checkout Pro), dentro do Monte seu pack.
+ * Só aparece com VITE_PAGAMENTO_ATIVO=1 (e MP_ACCESS_TOKEN no servidor). Sem isso, o pack segue pelo WhatsApp.
+ * Decisões do Eduardo ficam aqui:
+ */
+export const PAGAMENTO = {
+  /** 'total' cobra o pack inteiro (decisão do Eduardo); 'sinal' cobraria só a porcentagem abaixo. */
+  modo: 'total' as 'total' | 'sinal',
+  sinalPercentual: 30,
+  /**
+   * Lotação do dia: pessoas no total, somando os dois turnos (todo mundo entra, pela visitação).
+   * Conta reservas pagas, em análise e com link ainda válido. null = sem controle.
+   * Atenção: reservas feitas só pelo WhatsApp não entram nessa conta.
+   */
+  vagasPorDia: 70 as number | null,
+  /** Por quanto tempo o link de pagamento vale (a vaga fica segura enquanto isso). */
+  expiraMinutos: 30,
+  /** Máximo de parcelas no cartão. */
+  parcelasMax: 3,
+  /** Como aparece na fatura do cartão (até 22 caracteres). */
+  descricaoFatura: 'CACHOEIRA ESMERIL',
+  /** Política de cancelamento mostrada antes de pagar. Vazio = não mostra (preencher com o Eduardo). */
+  politicaCancelamento: '',
+  textos: {
+    pagar: 'Pagar agora',
+    gerando: 'Gerando pagamento…',
+    seguro: 'Pagamento seguro pelo Mercado Pago · Pix ou cartão',
+    ouWhatsapp: 'Prefere combinar antes? Envie pelo WhatsApp',
+    seusDados: 'Seus dados para a reserva',
+    nome: 'Nome completo',
+    telefone: 'WhatsApp com DDD',
+    email: 'E-mail (opcional)',
+    falta: 'Para pagar, escolha o turno e preencha nome e WhatsApp.',
+    sinal: (pct: number) => `Agora você paga só o sinal de ${pct}% para garantir a vaga.`,
+    esgotado: 'As vagas online para esse dia acabaram. Fale com a gente no WhatsApp para ver se ainda dá.',
+    erro: 'Não conseguimos gerar o pagamento agora. Envie pelo WhatsApp que a gente resolve.',
+  },
+  retorno: {
+    sucesso: {
+      titulo: 'Reserva confirmada!',
+      texto: 'Recebemos seu pagamento. A gente te chama no WhatsApp com o horário de chegada e o que levar.',
+    },
+    pendente: {
+      titulo: 'Pagamento em processamento',
+      texto: 'Assim que o Mercado Pago confirmar (no Pix costuma ser na hora), sua vaga fica garantida e a gente te avisa.',
+    },
+    falha: {
+      titulo: 'Pagamento não concluído',
+      texto: 'Nada foi cobrado. Você pode tentar de novo ou falar com a gente no WhatsApp.',
+    },
+    fechar: 'Entendi',
+  },
+}
+
 /** Id de uma hospedagem no Monte seu pack (o card de hospedagem abre o pack com ela marcada). */
 export function idHospedagem(nome: string) {
   return `hospedagem:${nome}`

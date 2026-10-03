@@ -1,43 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ATIVIDADES, EVENTO, HOSPEDAGEM, PACK, VISITACAO, WHATSAPP, idHospedagem } from '../dados/evento'
+import { EVENTO, PACK, PAGAMENTO, VISITACAO, WHATSAPP } from '../dados/evento'
+import { ITENS_PACK as ITENS, PESSOAS_MAX, calcularPack, rotuloUnidades, unidades, type Cobranca, type ItemPack as Item } from '../dados/pack'
 import { linkWhatsAppTexto, type Origem } from '../dados/rastreio'
 import { rastrear } from '../dados/medicao'
 import { Botao } from './Botao'
 
-type Cobranca = 'pessoa' | 'veiculo' | 'casal'
-
-interface Item {
-  id: string
-  grupo: 'atividade' | 'hospedagem' | 'entrada'
-  nome: string
-  preco: number
-  cobranca: Cobranca
-}
-
-const ITENS: Item[] = [
-  ...ATIVIDADES.map((a): Item => ({
-    id: a.slug, grupo: 'atividade', nome: a.nome, preco: a.precoNumero, cobranca: a.cobranca ?? 'pessoa',
-  })),
-  ...HOSPEDAGEM.map((h): Item => ({
-    id: idHospedagem(h.nome), grupo: 'hospedagem', nome: h.nome, preco: h.precoNumero, cobranca: h.cobranca,
-  })),
-  { id: 'visitacao', grupo: 'entrada', nome: VISITACAO.nome, preco: VISITACAO.precoNumero, cobranca: 'pessoa' },
-]
+/** Pagamento online ligado? (VITE_PAGAMENTO_ATIVO=1 no .env ou no Vercel, junto com o token do Mercado Pago.) */
+const PAGAMENTO_ATIVO = import.meta.env.VITE_PAGAMENTO_ATIVO === '1'
 
 const real = (v: number) =>
   v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
 
-/** Quantas unidades cobrar: pessoas, veículos de até 4 ou casais/chalés de até 2. */
-function unidades(cobranca: Cobranca, pessoas: number) {
-  if (cobranca === 'veiculo') return Math.ceil(pessoas / 4)
-  if (cobranca === 'casal') return Math.ceil(pessoas / 2)
-  return pessoas
-}
-
-function rotuloUnidades(cobranca: Cobranca, n: number) {
-  if (cobranca === 'veiculo') return n === 1 ? '1 veículo' : `${n} veículos`
-  if (cobranca === 'casal') return n === 1 ? '1 unidade' : `${n} unidades`
-  return n === 1 ? '1 pessoa' : `${n} pessoas`
+const soDigitos = (v: string) => v.replace(/\D/g, '')
+const visitanteId = () => {
+  try {
+    return localStorage.getItem('ecopark_visitante') ?? undefined
+  } catch {
+    return undefined
+  }
 }
 
 const porQue = (c: Cobranca) => (c === 'veiculo' ? PACK.porVeiculo : c === 'casal' ? PACK.porCasal : PACK.porPessoa)
@@ -59,6 +39,11 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
   const [sel, setSel] = useState<Set<string>>(() => new Set(inicial))
   const [pessoas, setPessoas] = useState(1)
   const [turno, setTurno] = useState('')
+  const [nome, setNome] = useState('')
+  const [telefone, setTelefone] = useState('')
+  const [email, setEmail] = useState('')
+  const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
   const fechar = useRef<HTMLButtonElement>(null)
 
   // Trava a rolagem da página, foca o fechar e fecha no Esc enquanto o painel está aberto.
@@ -74,7 +59,7 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
     }
   }, [onFechar])
 
-  const temHospedagem = ITENS.some((i) => i.grupo === 'hospedagem' && sel.has(i.id))
+  const temHospedagem = ITENS.some((i: Item) => i.grupo === 'hospedagem' && sel.has(i.id))
 
   const alternar = (item: Item) => {
     const prox = new Set(sel)
@@ -97,16 +82,42 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
     rastrear('pack_todas', { marcado: todasAtividades ? 0 : 1 })
   }
 
-  // A visitação é obrigatória: entra sempre, a não ser com hospedagem (que já a inclui).
-  const escolhidos = useMemo(
-    () =>
-      ITENS.filter((i) => (i.grupo === 'entrada' ? !temHospedagem : sel.has(i.id))).map((i) => {
-        const n = unidades(i.cobranca, pessoas)
-        return { ...i, n, subtotal: i.preco * n }
-      }),
-    [sel, pessoas, temHospedagem],
-  )
-  const total = escolhidos.reduce((s, i) => s + i.subtotal, 0)
+  // Mesma regra do servidor (src/dados/pack.ts): visitação obrigatória, salvo com hospedagem.
+  const { linhas: escolhidos, total } = useMemo(() => calcularPack(sel, pessoas), [sel, pessoas])
+  const valorAgora = PAGAMENTO.modo === 'sinal' ? Math.ceil((total * PAGAMENTO.sinalPercentual) / 100) : total
+  const podePagar = Boolean(turno) && nome.trim().length >= 2 && /^\d{10,11}$/.test(soDigitos(telefone))
+
+  const pagar = async () => {
+    if (!podePagar || enviando) return
+    setEnviando(true)
+    setErro('')
+    const dados = { itens: [...sel], pessoas, turno, nome: nome.trim(), telefone: soDigitos(telefone), email: email.trim() || undefined }
+    rastrear('pagamento_iniciado', { total: valorAgora, pessoas, quantidade: escolhidos.length })
+    try {
+      const r = await fetch('/api/pagamento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...dados, origem, visitante: visitanteId() }),
+      })
+      const resposta = (await r.json().catch(() => ({}))) as { url?: string; erro?: string }
+      if (r.ok && resposta.url) {
+        // Guarda o valor para registrar a compra na volta do Mercado Pago.
+        try {
+          sessionStorage.setItem('ecopark_pagamento_valor', String(valorAgora))
+        } catch {
+          /* sem armazenamento: a compra só não leva o valor */
+        }
+        window.location.href = resposta.url
+        return
+      }
+      setErro(resposta.erro === 'esgotado' ? PAGAMENTO.textos.esgotado : PAGAMENTO.textos.erro)
+      rastrear('pagamento_erro', { motivo: resposta.erro ?? String(r.status) })
+    } catch {
+      setErro(PAGAMENTO.textos.erro)
+      rastrear('pagamento_erro', { motivo: 'rede' })
+    }
+    setEnviando(false)
+  }
 
   const mensagem = [
     PACK.pedido,
@@ -230,8 +241,8 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
                   onClick={() => setPessoas((p) => Math.max(1, p - 1))}
                   className="grid size-11 place-items-center rounded-full text-xl disabled:opacity-30">−</button>
                 <span className="w-8 text-center font-rotulo text-lg tabular-nums" aria-live="polite">{pessoas}</span>
-                <button type="button" aria-label="Mais uma pessoa" disabled={pessoas >= 30}
-                  onClick={() => setPessoas((p) => Math.min(30, p + 1))}
+                <button type="button" aria-label="Mais uma pessoa" disabled={pessoas >= PESSOAS_MAX}
+                  onClick={() => setPessoas((p) => Math.min(PESSOAS_MAX, p + 1))}
                   className="grid size-11 place-items-center rounded-full text-xl disabled:opacity-30">+</button>
               </div>
             </div>
@@ -253,6 +264,37 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
               </div>
             </div>
           </section>
+
+          {PAGAMENTO_ATIVO && (
+            <section>
+              <h3 className="font-rotulo text-[10px] uppercase tracking-[.2em] text-agua">{PAGAMENTO.textos.seusDados}</h3>
+              <div className="mt-3 grid gap-2.5">
+                {[
+                  { id: 'pack-nome', rotulo: PAGAMENTO.textos.nome, valor: nome, mudar: setNome, tipo: 'text', auto: 'name', modo: 'text' },
+                  { id: 'pack-tel', rotulo: PAGAMENTO.textos.telefone, valor: telefone, mudar: setTelefone, tipo: 'tel', auto: 'tel-national', modo: 'tel' },
+                  { id: 'pack-email', rotulo: PAGAMENTO.textos.email, valor: email, mudar: setEmail, tipo: 'email', auto: 'email', modo: 'email' },
+                ].map((c) => (
+                  <label key={c.id} htmlFor={c.id} className="block">
+                    <span className="sr-only">{c.rotulo}</span>
+                    <input
+                      id={c.id}
+                      type={c.tipo}
+                      inputMode={c.modo as 'text' | 'tel' | 'email'}
+                      autoComplete={c.auto}
+                      placeholder={c.rotulo}
+                      value={c.valor}
+                      onChange={(e) => c.mudar(e.target.value)}
+                      maxLength={c.tipo === 'tel' ? 20 : 120}
+                      className="w-full rounded-xl bg-pedra/60 px-4 py-3 text-[16px] text-neve ring-1 ring-linha ring-inset placeholder:text-bruma focus:bg-noite focus:ring-2 focus:ring-agua focus:outline-none"
+                    />
+                  </label>
+                ))}
+              </div>
+              {PAGAMENTO.politicaCancelamento && (
+                <p className="mt-3 text-[12px] leading-snug text-bruma">{PAGAMENTO.politicaCancelamento}</p>
+              )}
+            </section>
+          )}
         </div>
 
         {/* Total e envio */}
@@ -261,7 +303,53 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
             <span className="text-sm font-semibold">{PACK.total}</span>
             <span className="font-rotulo text-2xl tabular-nums text-agua">{real(total)}</span>
           </div>
-          <p className="mt-0.5 text-[12px] text-bruma">{PACK.aviso}</p>
+          <p className="mt-0.5 text-[12px] text-bruma">
+            {PAGAMENTO_ATIVO
+              ? PAGAMENTO.modo === 'sinal'
+                ? PAGAMENTO.textos.sinal(PAGAMENTO.sinalPercentual)
+                : PAGAMENTO.textos.seguro
+              : PACK.aviso}
+          </p>
+
+          {PAGAMENTO_ATIVO ? (
+            <>
+              {erro && (
+                <p role="alert" className="mt-3 rounded-xl bg-laranja/10 px-3 py-2 text-[13px] leading-snug text-laranja-forte">
+                  {erro}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={pagar}
+                disabled={!podePagar || enviando}
+                className="mt-3 flex min-h-14 w-full items-center justify-between gap-3 rounded-full bg-laranja py-2 pr-2 pl-6 text-base font-semibold text-white shadow-lg shadow-laranja/30 transition-transform active:scale-[.98] disabled:bg-pedra disabled:text-bruma disabled:shadow-none"
+              >
+                <span>{enviando ? PAGAMENTO.textos.gerando : `${PAGAMENTO.textos.pagar} · ${real(valorAgora)}`}</span>
+                <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-laranja">
+                  <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-[2.5]">
+                    <path d="M5 12h14m-6-6 6 6-6 6" />
+                  </svg>
+                </span>
+              </button>
+              {!podePagar && <p className="mt-2 text-center text-[12px] text-bruma">{PAGAMENTO.textos.falta}</p>}
+              <a
+                href={linkWhatsAppTexto(WHATSAPP, origem, mensagem)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClickCapture={() =>
+                  rastrear('pack_enviado', {
+                    itens: escolhidos.map((i) => i.nome).join(' + ').slice(0, 150),
+                    quantidade: escolhidos.length,
+                    pessoas,
+                    total,
+                  })
+                }
+                className="mt-2 block text-center text-[13px] font-semibold text-agua underline decoration-agua/30 underline-offset-4"
+              >
+                {PAGAMENTO.textos.ouWhatsapp}
+              </a>
+            </>
+          ) : (
             <div
               className="mt-3 [&>a]:w-full [&>a]:justify-between"
               onClickCapture={() =>
@@ -277,6 +365,7 @@ export function MontePack({ inicial, origem, onFechar }: Props) {
                 {PACK.chamada}
               </Botao>
             </div>
+          )}
         </div>
       </div>
     </div>

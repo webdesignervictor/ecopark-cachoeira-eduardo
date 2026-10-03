@@ -17,6 +17,7 @@ import { Secao } from './componentes/Secao'
 import { MidiaFundo } from './componentes/MidiaFundo'
 import { BarraReserva } from './componentes/BarraReserva'
 import { AvisoCookies } from './componentes/AvisoCookies'
+import { RetornoPagamento } from './componentes/RetornoPagamento'
 import { Trilho } from './componentes/Trilho'
 import { VideoVertical } from './componentes/VideoVertical'
 
@@ -386,6 +387,7 @@ export default function App() {
         chamada={BARRA.chamada}
       />
       <AvisoCookies />
+      <RetornoPagamento origem={origem} />
       {pack.aberto && <MontePack inicial={pack.inicial} origem={origem} onFechar={fecharPack} />}
     </main>
   )

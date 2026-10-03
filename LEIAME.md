@@ -123,6 +123,37 @@ pessoas e turno, vê o total estimado e envia o pack escrito no WhatsApp.
 - Se `LINK_PAGAMENTO` for preenchido, os botões vão direto para o checkout.
 - Medição: `pack_aberto`, `pack_item`, `pack_todas`, `pack_enviado` (itens, pessoas, total) e `clique_whatsapp`.
 
+## Pagamento (Mercado Pago)
+
+"Pagar agora" dentro do Monte seu pack. Fluxo: a página manda só as escolhas → `api/pagamento.ts` recalcula o
+preço (`src/dados/pack.ts`, a mesma regra da página), grava a reserva e pede o link ao Mercado Pago → a pessoa paga
+(Pix ou cartão; boleto excluído) → o Mercado Pago avisa `api/mercadopago.ts`, que consulta o pagamento na API,
+confere o valor e marca a reserva como paga → a pessoa volta para `?pagamento=sucesso` e vê "Reserva confirmada".
+
+Regras (em `PAGAMENTO`, `src/dados/evento.ts`): pagamento **total**, **70 pessoas por dia** (soma dos dois turnos;
+reservas só pelo WhatsApp não entram na conta), link vale 30 min, até 3 parcelas.
+
+### Para ligar
+1. Banco: rodar `banco/schema.sql`, `banco/acessos.sql` e `banco/reservas.sql` (nessa ordem) no editor SQL.
+   Cada um mostra as senhas geradas na primeira vez — copiar na hora.
+2. Mercado Pago do Eduardo → Suas integrações → criar aplicação (Checkout Pro) → credenciais.
+   Começar com as **de teste** (`TEST-…`): cartões fictícios, nenhum dinheiro de verdade.
+3. Mesma aplicação → Webhooks → URL `https://SEU-DOMINIO/api/mercadopago`, evento "Pagamentos" → copiar a assinatura secreta.
+4. Vercel → Settings → Environment Variables:
+   | Variável | Valor |
+   |---|---|
+   | `VITE_SITE_URL` | `https://SEU-DOMINIO` |
+   | `DATABASE_URL` | conexão com o usuário `medicao_site` |
+   | `DATABASE_URL_RESERVAS` | conexão com o usuário `reservas_site` |
+   | `MP_ACCESS_TOKEN` | Access Token (teste, depois produção) |
+   | `MP_WEBHOOK_SECRET` | assinatura secreta do webhook |
+   | `VITE_PAGAMENTO_ATIVO` | `1` |
+   | `RESEND_API_KEY`, `EMAIL_AVISO` | opcional: e-mail ao Eduardo a cada reserva paga |
+5. Publicar, fazer um pagamento de teste, conferir a reserva em `reservas.confirmadas`. Depois trocar pelo token de produção.
+
+O app do Mercado Pago já avisa o Eduardo de cada venda. Lista de quem pagou: `select * from reservas.confirmadas`.
+Teste de ponta a ponta do backend: `_to_delete/teste-backend.ts` (Postgres local + Mercado Pago simulado).
+
 ## SEO e ícones
 
 `index.html`: título, descrição, canonical, prévia de compartilhamento (`imagens/compartilhar.jpg`, 1200×630)
