@@ -145,11 +145,15 @@ export default function App() {
       <Secao nome="galeria" rotulo={GALERIA.rotulo} titulo={GALERIA.titulo} intro={GALERIA.intro}>
         <Trilho className="mt-9">
           {GALERIA.videos.map((v, i) => (
-            <VideoVertical key={v.src} src={v.src} poster={v.poster}>
-              <span className="font-rotulo text-[10px] text-agua tabular-nums">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <p className="mt-1 text-base leading-snug font-semibold">{v.legenda}</p>
+            <VideoVertical key={v.src} src={v.src} poster={v.poster} som={!v.semTexto}>
+              {!v.semTexto && (
+                <>
+                  <span className="font-rotulo text-[10px] text-agua tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <p className="mt-1 text-base leading-snug font-semibold">{v.legenda}</p>
+                </>
+              )}
             </VideoVertical>
           ))}
         </Trilho>
