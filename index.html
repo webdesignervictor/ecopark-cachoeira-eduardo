@@ -9,10 +9,10 @@
       SEO. %VITE_SITE_URL% vem do arquivo .env (ou das variáveis do projeto no Vercel):
       é o endereço do site sem barra no final, ex.: https://evento.cachoeiradoesmeril.com.br
       Sem ele, as tags ficam com caminho relativo e a prévia no WhatsApp pode não mostrar a imagem.
-      Data, preço e local abaixo precisam bater com src/dados/evento.ts.
+      Datas e horários (%DATA_...%) vêm de src/dados/agenda.ts, sozinhos, no build. Preço e local precisam bater com src/dados/evento.ts.
     -->
-    <title>Rope Jump na Cachoeira do Esmeril · 10/10 · Patrocínio Paulista-SP</title>
-    <meta name="description" content="Salte de corda na Cachoeira do Esmeril, em Patrocínio Paulista-SP, no sábado 10 de outubro. Rope Jump, rede suspensa, trilha, camping e restaurante. Vagas limitadas por turno." />
+    <title>Rope Jump na Cachoeira do Esmeril · %DATA_CURTA% · Patrocínio Paulista-SP</title>
+    <meta name="description" content="Salte de corda na Cachoeira do Esmeril, em Patrocínio Paulista-SP, no %DATA_SEMANA_EXTENSA%. Rope Jump, rede suspensa, trilha, camping e restaurante. Vagas limitadas por turno." />
     <link rel="canonical" href="%VITE_SITE_URL%/" vite-ignore />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
@@ -27,14 +27,14 @@
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content="Cachoeira do Esmeril" />
     <meta property="og:url" content="%VITE_SITE_URL%/" />
-    <meta property="og:title" content="Rope Jump na Cachoeira do Esmeril · Sábado, 10 de outubro" />
+    <meta property="og:title" content="Rope Jump na Cachoeira do Esmeril · %DATA_COMPLETA%" />
     <meta property="og:description" content="Salto de corda, cachoeira e trilha em Patrocínio Paulista-SP. Vagas limitadas por turno — reserve pelo WhatsApp." />
     <meta property="og:image" content="%VITE_SITE_URL%/imagens/compartilhar.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Pessoa saltando de corda ao lado da Cachoeira do Esmeril" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rope Jump na Cachoeira do Esmeril · Sábado, 10 de outubro" />
+    <meta name="twitter:title" content="Rope Jump na Cachoeira do Esmeril · %DATA_COMPLETA%" />
     <meta name="twitter:description" content="Salto de corda, cachoeira e trilha em Patrocínio Paulista-SP. Vagas limitadas por turno." />
     <meta name="twitter:image" content="%VITE_SITE_URL%/imagens/compartilhar.jpg" />
 
@@ -45,8 +45,8 @@
         "@type": "Event",
         "name": "Rope Jump na Cachoeira do Esmeril",
         "description": "Salto de corda na Cachoeira do Esmeril, com trilha, rede suspensa, visita à Cachoeira da Escondida, passeio de 4x4, camping e restaurante no local. Dois turnos, vagas limitadas.",
-        "startDate": "2026-10-10T09:00:00-03:00",
-        "endDate": "2026-10-10T16:00:00-03:00",
+        "startDate": "%DATA_INICIO%",
+        "endDate": "%DATA_FIM%",
         "eventStatus": "https://schema.org/EventScheduled",
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "image": ["%VITE_SITE_URL%/imagens/compartilhar.jpg", "%VITE_SITE_URL%/imagens/fotos/rope-jump-salto.jpg"],
@@ -108,8 +108,7 @@
         src="https://www.facebook.com/tr?id=1570101697673660&ev=PageView&noscript=1" />
     </noscript>
     <noscript>
-      Rope Jump na Cachoeira do Esmeril, em Patrocínio Paulista-SP. Sábado, 10 de outubro, dois turnos (9h às 11h45 e
-      13h às 16h), vagas limitadas. Ative o JavaScript para ver a página completa e reservar pelo WhatsApp.
+      Rope Jump na Cachoeira do Esmeril, em Patrocínio Paulista-SP. %DATA_COMPLETA%, dois turnos (%DATA_TURNOS_E%), vagas limitadas. Ative o JavaScript para ver a página completa e reservar pelo WhatsApp.
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

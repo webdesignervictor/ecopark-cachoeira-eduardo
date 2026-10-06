@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { calcularAgenda } from './src/dados/agenda.ts'
 
 /**
  * Gera robots.txt e sitemap.xml no build, a partir de VITE_SITE_URL (.env ou Vercel).
@@ -31,9 +32,31 @@ function seo(siteUrl: string): Plugin {
   }
 }
 
+/**
+ * Troca os %DATA_...% do index.html pelas datas de src/dados/agenda.ts (título, descrição,
+ * prévia do WhatsApp, dados do Google). Roda no build e no `npm run dev`.
+ */
+function agendaNoHtml(): Plugin {
+  return {
+    name: 'agenda-no-html',
+    transformIndexHtml(html) {
+      const a = calcularAgenda()
+      const valores: Record<string, string> = {
+        DATA_CURTA: a.dataCurta,
+        DATA_COMPLETA: a.dataCompleta,
+        DATA_SEMANA_EXTENSA: `${a.diaSemana} ${a.dataExtensa}`,
+        DATA_INICIO: a.inicio,
+        DATA_FIM: a.fim,
+        DATA_TURNOS_E: a.turnos.join(' e '),
+      }
+      return html.replace(/%(DATA_[A-Z_]+)%/g, (todo, chave: string) => valores[chave] ?? todo)
+    },
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
   return {
-    plugins: [react(), tailwindcss(), seo(env.VITE_SITE_URL ?? '')],
+    plugins: [react(), tailwindcss(), agendaNoHtml(), seo(env.VITE_SITE_URL ?? '')],
   }
 })

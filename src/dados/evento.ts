@@ -1,7 +1,11 @@
 /**
  * Todo o texto da página vive aqui. Nenhuma frase é escrita dentro de componente.
- * Para mudar preço, data ou copy, mexa só neste arquivo.
+ * Para mudar preço ou copy, mexa neste arquivo. Datas e horários NÃO ficam aqui: vêm de agenda.ts.
  */
+
+import { DATA } from './agenda'
+
+const maiuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
 
 export interface Atividade {
   slug: string
@@ -59,17 +63,18 @@ export const EVENTO = {
   nome: 'Cachoeira do Esmeril',
   local: 'Patrocínio Paulista · SP',
   distancia: 'Patrocínio Paulista-SP',
-  data: 'Sábado, 10 de outubro',
+  diaSemana: DATA.diaSemana,
+  data: DATA.dataCompleta,
   /** Início do primeiro turno, horário de Brasília. É o alvo do contador. */
-  inicio: '2026-10-10T09:00:00-03:00',
-  dataCurta: '10/10',
-  turnos: ['9h às 11h45', '13h às 16h'],
-  outrasDatas: '11, 24 e 25 de outubro',
+  inicio: DATA.inicio,
+  dataCurta: DATA.dataCurta,
+  turnos: DATA.turnos,
+  outrasDatas: DATA.outrasDatas,
   aviso: 'Vagas limitadas por turno · reserva antecipada',
 } as const
 
 export const TOPO = {
-  rotulo: 'Sábado, 10 de outubro · Patrocínio Paulista-SP',
+  rotulo: `${DATA.dataCompleta} · Patrocínio Paulista-SP`,
   titulo: 'Salta, ou fica olhando?',
   subtitulo:
     'Rope Jump na Cachoeira do Esmeril. Dois turnos, vagas limitadas, e um dia que não tem como fazer pela metade.',
@@ -88,7 +93,7 @@ export const TOPO_MIDIA = {
 
 export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: Video[] } = {
   rotulo: 'Antes de decidir',
-  titulo: 'É isso que te espera no sábado',
+  titulo: `É isso que te espera no ${DATA.diaSemana}`,
   intro: 'Como é o dia, do começo ao fim. Arraste para o lado.',
   videos: [
     { src: '/videos/galeria-01.mp4', poster: '/imagens/ia/galeria-01.jpg', legenda: 'A subida até a plataforma', semTexto: true },
@@ -112,7 +117,7 @@ export const FECHO_VIDEO = '/videos/fecho.mp4'
 export const FECHO_IMAGEM = '/imagens/fotos/cachoeira-esmeril.jpg'
 
 export const PARA_QUEM = {
-  titulo: 'Para quem é este sábado',
+  titulo: `Para quem é este ${DATA.diaSemana}`,
   sim: [
     'Quem já pensou em saltar e nunca teve a data na mão',
     'Turma de amigos que quer um dia que rende história',
@@ -174,10 +179,10 @@ export const VISITACAO = {
 export const HOSPEDAGEM_SECAO = {
   rotulo: 'Fica o fim de semana',
   titulo: 'Acampe ou durma no chalé',
-  intro: 'Quem dorme no local não pega estrada no sábado cedo e já está lá para o turno da manhã.',
+  intro: `Quem dorme no local não pega estrada no ${DATA.diaSemana} cedo e já está lá para o turno da manhã.`,
   chamada: 'Reservar',
   /** Abertura da mensagem do WhatsApp quando o clique vem de um card de hospedagem. */
-  pedido: 'Quero reservar hospedagem para o fim de semana do dia 10/10',
+  pedido: `Quero reservar hospedagem para o fim de semana do dia ${DATA.dataCurta}`,
 } as const
 
 export const HOSPEDAGEM: Hospedagem[] = [
@@ -186,7 +191,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     preco: 'R$ 50',
     precoNumero: 50,
     cobranca: 'pessoa',
-    detalhe: 'Por pessoa, de sábado a domingo',
+    detalhe: `Por pessoa, de ${DATA.diaSemana} a ${DATA.diaDepois}`,
     video: '/videos/camping.mp4',
     imagem: '/imagens/ia/camping.jpg',
   },
@@ -195,17 +200,17 @@ export const HOSPEDAGEM: Hospedagem[] = [
     preco: 'R$ 70',
     precoNumero: 70,
     cobranca: 'pessoa',
-    detalhe: 'Por pessoa, de sexta a domingo',
+    detalhe: `Por pessoa, de ${DATA.diaAntes} a ${DATA.diaDepois}`,
     video: '/videos/camping-fds.mp4',
     imagem: '/imagens/ia/camping-fds.jpg',
-    selo: 'Sexta a domingo',
+    selo: `${maiuscula(DATA.diaAntes)} a ${DATA.diaDepois}`,
   },
   {
     nome: 'Chalé casal',
     preco: 'R$ 350',
     precoNumero: 350,
     cobranca: 'casal',
-    detalhe: 'O casal, de sexta a domingo',
+    detalhe: `O casal, de ${DATA.diaAntes} a ${DATA.diaDepois}`,
     video: '/videos/chale.mp4',
     imagem: '/imagens/ia/chale.jpg',
     selo: 'Para casal',
@@ -218,7 +223,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
  * diz quantas pessoas e o turno, vê o total estimado e manda tudo pronto no WhatsApp.
  */
 export const PACK = {
-  titulo: 'Monte o seu sábado',
+  titulo: `Monte o seu ${DATA.diaSemana}`,
   intro: 'A entrada já vem somada no total. Escolha de 1 atividade até todas.',
   grupoAtividades: 'Atividades',
   grupoHospedagem: 'Hospedagem (escolha uma)',
@@ -236,7 +241,7 @@ export const PACK = {
   porCasal: 'pelo casal',
   porPessoa: 'por pessoa',
   /** Primeira linha da mensagem do WhatsApp. */
-  pedido: 'Quero montar meu pack para o dia 10/10:',
+  pedido: `Quero montar meu pack para o dia ${DATA.dataCurta}:`,
 } as const
 
 /**
@@ -319,7 +324,7 @@ export const RESTAURANTE = {
     { src: '/videos/restaurante-bebidas.mp4', poster: '/imagens/fotos/restaurante-lanche.jpg', legenda: 'Hambúrguer' },
   ] satisfies Video[] as Video[],
   chamada: 'Falar com o restaurante',
-  pedido: 'Quero saber do restaurante no fim de semana do dia 10/10',
+  pedido: `Quero saber do restaurante no fim de semana do dia ${DATA.dataCurta}`,
 }
 
 export interface Avaliacao {
@@ -360,8 +365,26 @@ export const LOCALIZACAO = {
   chamadaWaze: 'Abrir no Waze',
   /** Abre o Waze já navegando até o local. */
   waze: 'https://waze.com/ul?ll=-20.8346588,-47.3140229&navigate=yes',
-  embed:
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3728.9268835153134!2d-47.3140229!3d-20.834658800000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94b75b150106ed37%3A0x824c2c64c99807c4!2sCachoeira%20do%20Esmeril%20Camping%20Vale%20dos%20Sonhos!5e0!3m2!1spt-BR!2sbr!4v1790474325769!5m2!1spt-BR!2sbr',
+  /** Texto do aviso sobre cada mapa. */
+  avisoMapa: 'Toque no mapa para abrir',
+  /** Os dois pontos do caminho, na ordem em que a pessoa passa por eles. */
+  mapas: [
+    {
+      rotulo: 'Passo 1',
+      /** Abre o ponto (o mesmo do pino do mapa) no app do Google Maps. */
+      link: 'https://www.google.com/maps/search/?api=1&query=-20.80975,-47.31575',
+      titulo: 'Primeiro ponto do caminho',
+      embed:
+        'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3729.54328493247!2d-47.318316924749254!3d-20.80975698078532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjDCsDQ4JzM1LjEiUyA0N8KwMTgnNTYuNyJX!5e0!3m2!1spt-BR!2sbr!4v1791258572904!5m2!1spt-BR!2sbr',
+    },
+    {
+      rotulo: 'Passo 2',
+      link: 'https://www.google.com/maps/search/?api=1&query=-20.834389,-47.314111',
+      titulo: 'Chegada à Cachoeira do Esmeril',
+      embed:
+        'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3728.9332937599083!2d-47.31667292474877!3d-20.834399980766754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjDCsDUwJzAzLjgiUyA0N8KwMTgnNTAuOCJX!5e0!3m2!1spt-BR!2sbr!4v1791258633548!5m2!1spt-BR!2sbr',
+    },
+  ],
   /** Abre o app do Google Maps no celular já com o destino. */
   rota: 'https://www.google.com/maps/dir/?api=1&destination=-20.8346588,-47.3140229',
 } as const
@@ -370,7 +393,7 @@ export const COMO_FUNCIONA: Passo[] = [
   {
     numero: '01',
     titulo: 'Escolha o turno',
-    texto: 'Manhã, das 9h às 11h45, ou tarde, das 13h às 16h. Cada turno tem número limitado de vagas.',
+    texto: `Manhã, das ${DATA.turnos[0]}, ou tarde, das ${DATA.turnos[1]}. Cada turno tem número limitado de vagas.`,
   },
   {
     numero: '02',
@@ -379,7 +402,7 @@ export const COMO_FUNCIONA: Passo[] = [
   },
   {
     numero: '03',
-    titulo: 'Apareça no sábado',
+    titulo: `Apareça no ${DATA.diaSemana}`,
     texto: 'A gente manda o endereço, o horário de chegada e o que levar. É só chegar.',
   },
 ]
@@ -403,14 +426,16 @@ export const OBJECOES: Objecao[] = [
   {
     pergunta: 'Não consigo nesta data.',
     resposta:
-      'Ainda tem 11, 24 e 25 de outubro. Fala com a gente que a reserva é para a data que funcionar para você.',
+      DATA.temOutrasDatas
+        ? `Ainda tem ${DATA.outrasDatas}. Fala com a gente que a reserva é para a data que funcionar para você.`
+        : 'Fala com a gente para saber das próximas datas.',
   },
 ]
 
 /** Barra fixa na base da tela do celular, que aparece depois do topo. */
 export const BARRA = {
   titulo: 'Rope Jump · R$ 200',
-  apoio: '10/10 · vagas limitadas',
+  apoio: `${DATA.dataCurta} · vagas limitadas`,
   chamada: 'Reservar',
 } as const
 
@@ -420,7 +445,7 @@ export const CONTADOR = {
 } as const
 
 export const FECHO = {
-  titulo: 'A data é sábado. A vaga é por turno.',
+  titulo: `A data é ${DATA.diaSemana}. A vaga é por turno.`,
   texto:
     'Quando encher, encheu — e a próxima é só daqui a duas semanas. Se você já sabe que quer, garante agora.',
   chamada: 'Garantir minha vaga',

@@ -191,7 +191,7 @@ export default function App() {
         nome="atividades"
         rotulo="O que dá para fazer"
         titulo="Escolha o seu dia"
-        intro="Cada atividade é cobrada à parte, além da taxa de visitação. Você monta o sábado do tamanho que quiser."
+        intro={`Cada atividade é cobrada à parte, além da taxa de visitação. Você monta o ${EVENTO.diaSemana} do tamanho que quiser.`}
         fundo="vidro"
       >
         <Trilho colunas={4} className="mt-9">
@@ -287,13 +287,6 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
-
-        <Botao
-          href={linkWhatsApp(WHATSAPP, origem, 'Restaurante', RESTAURANTE.pedido)}
-          className="mt-8"
-        >
-          {RESTAURANTE.chamada}
-        </Botao>
       </Secao>
 
       {/* 08 · Localização */}
@@ -301,33 +294,40 @@ export default function App() {
         <p className="mt-4 font-semibold">{LOCALIZACAO.lugar}</p>
         <p className="mt-1 max-w-2xl text-[15px] leading-relaxed text-bruma">{LOCALIZACAO.texto}</p>
 
-        <div className="mt-6 overflow-hidden rounded-3xl bg-pedra shadow-xl shadow-black/10 ring-1 ring-linha">
-          <iframe
-            src={LOCALIZACAO.embed}
-            title={`Mapa: ${LOCALIZACAO.lugar}`}
-            loading="lazy"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            className="block aspect-square w-full border-0 sm:aspect-[16/9] lg:aspect-[21/9]"
-          />
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <Botao href={LOCALIZACAO.rota}>
-            <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2" aria-hidden="true">
-              <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
-              <circle cx="12" cy="9.5" r="2.5" />
-            </svg>
-            {LOCALIZACAO.chamada}
-          </Botao>
-          <a
-            href={LOCALIZACAO.waze}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-semibold text-agua underline decoration-agua/30 underline-offset-4 hover:decoration-agua"
-          >
-            {LOCALIZACAO.chamadaWaze}
-          </a>
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          {LOCALIZACAO.mapas.map((m) => (
+            <figure key={m.rotulo}>
+              <figcaption className="mb-3">
+                <span className="font-rotulo text-[10px] uppercase tracking-[.18em] text-agua">{m.rotulo}</span>
+                <p className="mt-0.5 font-semibold">{m.titulo}</p>
+              </figcaption>
+              <div className="relative overflow-hidden rounded-3xl bg-pedra shadow-xl shadow-black/10 ring-1 ring-linha">
+                <iframe
+                  src={m.embed}
+                  title={`Mapa: ${m.titulo}`}
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  tabIndex={-1}
+                  className="block aspect-[4/3] w-full border-0"
+                />
+                {/* O mapa todo vira link: abre o ponto no app do Google Maps, onde a pessoa já traça a rota. */}
+                <a
+                  href={m.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${LOCALIZACAO.avisoMapa}: ${m.titulo}`}
+                  className="group absolute inset-0 flex items-end justify-center p-3"
+                >
+                  <span className="inline-flex items-center gap-2 rounded-full bg-noite/80 px-3.5 py-2 text-[13px] font-semibold text-neve shadow-lg backdrop-blur transition-colors group-hover:bg-noite">
+                    <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-2" aria-hidden="true">
+                      <path d="M14 4h6v6m0-6-9 9M10 5H5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-5" />
+                    </svg>
+                    {LOCALIZACAO.avisoMapa}
+                  </span>
+                </a>
+              </div>
+            </figure>
+          ))}
         </div>
       </Secao>
 

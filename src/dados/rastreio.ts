@@ -4,6 +4,8 @@
  * de onde veio cada conversa.
  */
 
+import { DATA } from './agenda'
+
 const CHAVE = 'ecopark_origem_1010'
 
 export interface Origem {
@@ -67,7 +69,7 @@ export function linkWhatsApp(
   numero: string,
   origem: Origem,
   assunto: string,
-  pedido = 'Quero garantir minha vaga no evento do dia 10/10',
+  pedido = `Quero garantir minha vaga no evento do dia ${DATA.dataCurta}`,
 ): string {
   const texto = `Oi! ${pedido} — ${assunto}.\n\n(origem: ${rotuloOrigem(origem)})`
   return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`

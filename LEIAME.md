@@ -2,6 +2,26 @@
 
 Vite + React 19 + TypeScript estrito + Tailwind v4. Página única.
 
+## Novo evento: datas e horários (template)
+
+Tudo sobre data e horário vive em **`src/dados/agenda.ts`**. Troque só a lista `datas` (e `turnos`, se mudarem):
+
+```ts
+datas: [{ dia: '2026-10-10' }, { dia: '2026-10-11' }, { dia: '2026-10-24' }],
+turnos: [['09:00', '11:45'], ['13:00', '16:00']],
+```
+
+Dali saem sozinhos: dia da semana ("sábado"), "10/10", "10 de outubro", os horários, o contador, as diárias
+da hospedagem ("sexta a domingo"), as mensagens do WhatsApp e, no build, o título, a descrição, a prévia
+de compartilhamento e os dados de Evento do Google (`index.html`).
+
+**Automático:** a data principal é a primeira da lista que ainda não terminou. Passou o último turno do dia,
+a página vira para a próxima data e as demais viram "outras datas". Se a lista acabar, fica a última.
+O `index.html` (SEO) é gerado no build, então vale publicar de novo a cada virada de data.
+
+Ainda escrito à mão em `evento.ts`, para revisar a cada evento: "Aberto sábado e domingo" (restaurante),
+"a próxima é só daqui a duas semanas" (barra de vagas), copy de preço/atividades e o nome do evento.
+
 ## Antes de publicar — obrigatório
 
 Tudo em `src/dados/`:
