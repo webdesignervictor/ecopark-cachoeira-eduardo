@@ -131,7 +131,7 @@ export const ATIVIDADES: Atividade[] = [
     slug: 'rope-jump',
     video: '/videos/rope-jump.mp4',
     // Foto real do salto (as de imagens/ia/ são ilustrações).
-    imagem: '/imagens/fotos/rope-jump-salto.jpg',
+    imagem: '/imagens/fotos/rope-jump-card.jpg',
     nome: 'Rope Jump',
     preco: 'R$ 200',
     precoNumero: 200,

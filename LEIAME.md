@@ -39,15 +39,15 @@ Tudo em `src/dados/`:
 
 Hero, **vertical 9:16**, em loop e sem som. No celular cobre a hero inteira; no desktop vira um card à direita.
 
-- `public/videos/hero.mp4` — já comprimido: H.264, 540×960, 24 fps, sem áudio, 5,5 MB (original HEVC de 55 MB guardado em `_to_delete/originais/`).
+- `public/videos/hero-2.mp4` — já comprimido: H.264, 480×854, 30 fps, sem áudio, 2,4 MB.
 - `public/imagens/topo.jpg` — primeiro quadro do vídeo. Pôster enquanto carrega e imagem fixa para quem tem "reduzir movimento" ligado.
 
 Para trocar o vídeo, comprimir assim antes (HEVC não toca no Chrome/Firefox):
 
 ```bash
 ffmpeg -i ORIGINAL.mp4 -an -vf "scale=540:960:flags=lanczos,fps=24" -c:v libx264 -preset slow -crf 32 \
-  -profile:v high -pix_fmt yuv420p -movflags +faststart public/videos/hero.mp4
-ffmpeg -y -i public/videos/hero.mp4 -frames:v 1 -q:v 5 public/imagens/topo.jpg
+  -profile:v high -pix_fmt yuv420p -movflags +faststart public/videos/hero-2.mp4
+ffmpeg -y -i public/videos/hero-2.mp4 -frames:v 1 -q:v 5 public/imagens/topo.jpg
 ```
 
 ## Vídeos (verticais 9:16)

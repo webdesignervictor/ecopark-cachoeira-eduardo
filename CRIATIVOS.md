@@ -65,7 +65,7 @@ Quando o link é enviado no WhatsApp ou no Instagram, aparece uma prévia. Hoje 
 
 | Pasta | Arquivos |
 |---|---|
-| `videos/` | `hero.mp4` · `galeria-01.mp4` … `galeria-08.mp4` · `rope-jump.mp4` · `rede-suspensa.mp4` · `cachoeira-escondida.mp4` · `morro-da-mesa.mp4` · `camping.mp4` · `camping-fds.mp4` · `chale.mp4` · `restaurante.mp4` · `restaurante-pratos.mp4` · `restaurante-porcoes.mp4` · `restaurante-bebidas.mp4` · `fecho.mp4` |
+| `videos/` | `hero-2.mp4` · `galeria-01.mp4` … `galeria-08.mp4` · `rope-jump.mp4` · `rede-suspensa.mp4` · `cachoeira-escondida.mp4` · `morro-da-mesa.mp4` · `camping.mp4` · `camping-fds.mp4` · `chale.mp4` · `restaurante.mp4` · `restaurante-pratos.mp4` · `restaurante-porcoes.mp4` · `restaurante-bebidas.mp4` · `fecho.mp4` |
 | `imagens/` | `topo.jpg` (primeiro quadro da hero) · `compartilhar.jpg` |
 
 **Total: 20 vídeos e 2 imagens.**
