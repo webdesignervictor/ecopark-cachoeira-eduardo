@@ -232,7 +232,7 @@ export default function App() {
 
         <Trilho colunas={3} className="mt-8">
           {HOSPEDAGEM.map((h) => (
-            <VideoVertical key={h.nome} src={h.video} poster={h.imagem} className={h.destaque ? 'borda-viva' : ''}>
+            <VideoVertical key={h.nome} src={h.video} poster={h.imagem} som={false} className={h.destaque ? 'borda-viva' : ''}>
               {h.selo && (
                 <span
                   className={`mb-2 inline-block rounded-full px-2.5 py-1 font-rotulo text-[9px] font-medium uppercase tracking-[.16em] ${
