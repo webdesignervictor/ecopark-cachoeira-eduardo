@@ -193,7 +193,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     cobranca: 'pessoa',
     detalhe: `Por pessoa, de ${DATA.diaSemana} a ${DATA.diaDepois}`,
     video: '/videos/camping.mp4',
-    imagem: '/imagens/ia/camping.jpg',
+    imagem: '/imagens/fotos/camping-card.jpg',
   },
   {
     nome: 'Camping · fim de semana',
@@ -202,7 +202,7 @@ export const HOSPEDAGEM: Hospedagem[] = [
     cobranca: 'pessoa',
     detalhe: `Por pessoa, de ${DATA.diaAntes} a ${DATA.diaDepois}`,
     video: '/videos/camping-fds.mp4',
-    imagem: '/imagens/ia/camping-fds.jpg',
+    imagem: '/imagens/fotos/camping-fds-card.jpg',
     selo: `${maiuscula(DATA.diaAntes)} a ${DATA.diaDepois}`,
   },
   {
