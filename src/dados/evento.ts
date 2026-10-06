@@ -40,6 +40,8 @@ export interface Video {
   legenda: string
   /** Card só com o vídeo: sem legenda, número nem botão de som. */
   semTexto?: boolean
+  /** Vídeo sem áudio: esconde o botão de som. */
+  semSom?: boolean
 }
 
 export interface Passo {
@@ -80,7 +82,7 @@ export const TOPO = {
  * No celular cobre a hero inteira; no desktop vira um card à direita.
  */
 export const TOPO_MIDIA = {
-  video: '/videos/hero.mp4',
+  video: '/videos/hero-2.mp4',
   foto: '/imagens/topo.jpg',
 } as const
 
@@ -90,7 +92,7 @@ export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: V
   intro: 'Como é o dia, do começo ao fim. Arraste para o lado.',
   videos: [
     { src: '/videos/galeria-01.mp4', poster: '/imagens/ia/galeria-01.jpg', legenda: 'A subida até a plataforma', semTexto: true },
-    { src: '/videos/galeria-02.mp4', poster: '/imagens/ia/galeria-02.jpg', legenda: 'Conferência do equipamento' },
+    { src: '/videos/galeria-02.mp4', poster: '/imagens/ia/galeria-02.jpg', legenda: 'Conferência do equipamento', semTexto: true },
     { src: '/videos/galeria-03.mp4', poster: '/imagens/ia/galeria-03.jpg', legenda: 'Os segundos antes' },
     { src: '/videos/galeria-04.mp4', poster: '/imagens/fotos/galeria-salto.jpg', legenda: 'O salto' },
     { src: '/videos/galeria-05.mp4', poster: '/imagens/ia/galeria-05.jpg', legenda: 'O balanço depois' },

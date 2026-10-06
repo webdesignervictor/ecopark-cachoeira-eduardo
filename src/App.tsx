@@ -145,7 +145,7 @@ export default function App() {
       <Secao nome="galeria" rotulo={GALERIA.rotulo} titulo={GALERIA.titulo} intro={GALERIA.intro}>
         <Trilho className="mt-9">
           {GALERIA.videos.map((v, i) => (
-            <VideoVertical key={v.src} src={v.src} poster={v.poster} som={!v.semTexto}>
+            <VideoVertical key={v.src} src={v.src} poster={v.poster} som={!v.semTexto && !v.semSom}>
               {!v.semTexto && (
                 <>
                   <span className="font-rotulo text-[10px] text-agua tabular-nums">
