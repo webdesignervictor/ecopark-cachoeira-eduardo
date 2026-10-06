@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Originais pesados (vídeos/fotos brutos): ficam só no computador, fora do deploy
+_brutos/

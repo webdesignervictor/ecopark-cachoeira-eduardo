@@ -2,6 +2,12 @@
 
 Vite + React 19 + TypeScript estrito + Tailwind v4. Página única.
 
+## Arquivos brutos (fora do deploy)
+
+Vídeos e fotos originais (`.MOV`, `.HEIC`, 4K) ficam em `_brutos/`, que não vai para o git nem para o Vercel.
+Só entra em `public/` o arquivo já convertido (vídeos 9:16 de ~400 px, imagens até 640 px de largura).
+Tudo o que está em `public/` vai para o ar, então não solte arquivo bruto lá.
+
 ## Novo evento: datas e horários (template)
 
 Tudo sobre data e horário vive em **`src/dados/agenda.ts`**. Troque só a lista `datas` (e `turnos`, se mudarem):
