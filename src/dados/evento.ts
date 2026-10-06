@@ -96,9 +96,10 @@ export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: V
     { src: '/videos/galeria-03.mp4', poster: '/imagens/ia/galeria-03.jpg', legenda: 'Os segundos antes', semTexto: true },
     { src: '/videos/galeria-04.mp4', poster: '/imagens/fotos/galeria-salto.jpg', legenda: 'O salto', semTexto: true },
     { src: '/videos/galeria-05.mp4', poster: '/imagens/ia/galeria-05.jpg', legenda: 'O balanço depois', semTexto: true },
-    { src: '/videos/galeria-06.mp4', poster: '/imagens/ia/galeria-06.jpg', legenda: 'Rede suspensa' },
+    { src: '/videos/galeria-06.mp4', poster: '/imagens/ia/galeria-06.jpg', legenda: 'Rede suspensa', semTexto: true },
     { src: '/videos/galeria-07.mp4', poster: '/imagens/ia/galeria-07.jpg', legenda: 'Cachoeira da Escondida' },
-    { src: '/videos/galeria-08.mp4', poster: '/imagens/ia/galeria-08.jpg', legenda: 'Fim de tarde no camping' },
+    { src: '/videos/galeria-08.mp4', poster: '/imagens/fotos/galeria-comida.jpg', legenda: 'Comida boa demais', semTexto: true },
+    { src: '/videos/galeria-09.mp4', legenda: 'Vídeo 09', semTexto: true },
   ],
 }
 
