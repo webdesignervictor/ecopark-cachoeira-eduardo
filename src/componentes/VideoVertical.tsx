@@ -21,6 +21,8 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
   const [mudo, setMudo] = useState(true)
   // O arquivo só é pedido quando o card chega perto da tela — 18 vídeos não baixam todos na abertura.
   const [perto, setPerto] = useState(false)
+  // Com o primeiro quadro do vídeo na tela, a capa (ilustração) sai e o vídeo aparece, mesmo parado.
+  const [pronto, setPronto] = useState(false)
 
   useEffect(() => {
     const v = ref.current
@@ -31,7 +33,8 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
       },
       { rootMargin: '400px' },
     )
-    obs.observe(v)
+    // Observa a seção, não o card: dentro de um carrossel, o card fora da vista é cortado e nunca "chega perto".
+    obs.observe(v.closest('section') ?? v)
     return () => obs.disconnect()
   }, [perto])
 
@@ -45,7 +48,7 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
         if (e.isIntersecting) v.play().catch(() => {})
         else v.pause()
       },
-      { threshold: 0.4 },
+      { threshold: 0.25 },
     )
     obs.observe(v)
     return () => obs.disconnect()
@@ -80,9 +83,12 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
       ) : (
         <video
           ref={ref}
-          src={perto ? src : undefined}
-          // A capa também espera o card chegar perto: <video poster> não tem carregamento preguiçoso.
-          poster={perto ? poster : undefined}
+          // #t=0.001 faz o iPhone mostrar o primeiro quadro sem precisar tocar.
+          src={perto ? `${src}#t=0.001` : undefined}
+          // A capa também espera o card chegar perto (<video poster> não tem carregamento preguiçoso)
+          // e some quando o vídeo já tem um quadro para mostrar.
+          poster={perto && !pronto ? poster : undefined}
+          onLoadedData={() => setPronto(true)}
           muted
           loop
           playsInline
