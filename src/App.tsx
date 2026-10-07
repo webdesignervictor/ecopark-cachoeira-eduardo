@@ -7,7 +7,6 @@ import {
 } from './dados/evento'
 import { capturarOrigem, linkWhatsApp } from './dados/rastreio'
 import { iniciarMedicao } from './dados/medicao'
-import { AvisoIlustracao } from './componentes/AvisoIlustracao'
 import { Botao } from './componentes/Botao'
 import { Contador } from './componentes/Contador'
 import { Estrelas } from './componentes/Estrelas'
@@ -157,7 +156,6 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
-        <AvisoIlustracao />
       </Secao>
 
       {/* 03 · Para quem é */}
@@ -218,7 +216,6 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
-        <AvisoIlustracao />
       </Secao>
 
       {/* 06 · Hospedagem */}
@@ -258,7 +255,6 @@ export default function App() {
             </VideoVertical>
           ))}
         </Trilho>
-        <AvisoIlustracao />
       </Secao>
 
       {/* 07 · Restaurante */}

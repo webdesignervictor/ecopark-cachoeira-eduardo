@@ -59,6 +59,12 @@ export interface Objecao {
   resposta: string
 }
 
+/**
+ * Sobe 1 sempre que trocar um vídeo SEM mudar o nome do arquivo: o número entra no endereço
+ * e o navegador baixa de novo em vez de usar a cópia guardada.
+ */
+export const VERSAO_MIDIA = '2'
+
 export const EVENTO = {
   nome: 'Cachoeira do Esmeril',
   local: 'Patrocínio Paulista · SP',
@@ -107,10 +113,6 @@ export const GALERIA: { rotulo: string; titulo: string; intro: string; videos: V
     { src: '/videos/galeria-09.mp4', legenda: 'Vídeo 09', semTexto: true },
   ],
 }
-
-/** Nota sob as galerias que ainda usam ilustração (galeria, atividades, hospedagem). */
-export const AVISO_ILUSTRACAO =
-  'Algumas imagens são ilustrativas. Estamos melhorando o site e captando fotos e vídeos profissionais do local — em breve aqui.'
 
 export const FECHO_VIDEO = '/videos/fecho.mp4'
 /** Foto real mostrada no card do fecho enquanto o vídeo não existe. */

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { VERSAO_MIDIA } from '../dados/evento'
 
 interface Props {
   src: string
@@ -84,7 +85,7 @@ export function VideoVertical({ src, poster, className = '', som = true, childre
         <video
           ref={ref}
           // #t=0.001 faz o iPhone mostrar o primeiro quadro sem precisar tocar.
-          src={perto ? `${src}#t=0.001` : undefined}
+          src={perto ? `${src}?v=${VERSAO_MIDIA}#t=0.001` : undefined}
           // A capa também espera o card chegar perto (<video poster> não tem carregamento preguiçoso)
           // e some quando o vídeo já tem um quadro para mostrar.
           poster={perto && !pronto ? poster : undefined}
